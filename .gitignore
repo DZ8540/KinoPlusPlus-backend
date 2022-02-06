@@ -1,0 +1,11 @@
+*.bak
+
+.env
+.vscode
+.history
+.DS_STORE
+
+tmp
+build
+coverage
+node_modules
