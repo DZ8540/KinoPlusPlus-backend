@@ -10,7 +10,7 @@ import { ResponseCodes, ResponseMessages } from 'Config/response'
 export default class VideoSyncService {
   public static async sync(): Promise<any> {
     // let maxPages: number = (await HttpClientService.videoApiInstance().get('/movies')).data['last_page']
-    let maxPages: number = 1
+    let maxPages: number = 5
     let startPage: number = 1
 
     try {
@@ -18,7 +18,6 @@ export default class VideoSyncService {
         let { data } = await HttpClientService.videoApiInstance().get('/movies', {
           params: {
             page: i,
-            limit: 1,
           }
         })
 
