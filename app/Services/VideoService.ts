@@ -93,6 +93,17 @@ export default class VideoService {
     }
   }
 
+  public static async incrementViewsCount(item: Video): Promise<Video> {
+    let viewsCount: number = ++item.viewsCount
+
+    try {
+      return await item.merge({ viewsCount }).save()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
   public static async getNewest(payload: NewestPayload): Promise<Video[]> {
     if (!payload.limit)
       payload.limit = 10

@@ -2,7 +2,7 @@ import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { camelCase } from '../../helpers'
 import { IMG_PLACEHOLDER } from 'Config/drive'
-import { BaseModel, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Video extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -94,6 +94,12 @@ export default class Video extends BaseModel {
     return this.thirdImage ?? IMG_PLACEHOLDER
   }
 
+  @beforeCreate()
+  public static async setDuration(video: Video) {
+    // @ts-ignore
+    video.duration = video.duration.toISOTime()
+  }
+
   @beforeSave()
   public static async setSlug(video: Video) {
     if (video.$dirty.slug)
@@ -101,11 +107,5 @@ export default class Video extends BaseModel {
 
     if (!video.slug)
       video.slug = camelCase(`${video.name} ${video.released.year}`)
-  }
-
-  @beforeSave()
-  public static async setDuration(video: Video) {
-    // @ts-ignore
-    video.duration = video.duration.toISOTime()
   }
 }
