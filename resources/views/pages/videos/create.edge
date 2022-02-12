@@ -1,0 +1,154 @@
+@layout('layouts/index')
+
+@set('title', 'Create new video')
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+  <link rel="stylesheet" href="/vendor/pickadate/themes/default.css">
+  <link rel="stylesheet" href="/vendor/pickadate/themes/default.date.css">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+        <a href="{{ route('videos.index') }}" class="btn btn-primary btn-sm">Back</a>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+          <form action="{{ route('videos.store') }}" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+              <label class="mb-1">Slug</label>
+              <input type="string" class="form-control" name="slug" value="{{ flashMessages.get('slug') ?? '' }}">
+
+              @if(flashMessages.has('errors.slug'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.slug')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Name *</strong></label>
+              <input type="string" class="form-control" name="name" value="{{ flashMessages.get('name') ?? '' }}">
+
+              @if(flashMessages.has('errors.name'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.name')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Description *</strong></label>
+              <textarea id="summernote" class="summernote" name="description">{{ flashMessages.get('description') ?? '' }}</textarea>
+
+              @if(flashMessages.has('errors.description'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.description')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Released *</strong></label>
+              <input type="string" class="form-control" name="released" value="{{ flashMessages.get('released') ?? '' }}">
+
+              @if(flashMessages.has('errors.released'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.released')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Country *</strong></label>
+              <input type="text" class="form-control" name="country" value="{{ flashMessages.get('country') ?? '' }}">
+
+              @if(flashMessages.has('errors.country'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.country')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Rating *</strong></label>
+              <input type="number" class="form-control" name="rating" value="{{ flashMessages.get('rating') ?? '0.0' }}">
+
+              @if(flashMessages.has('errors.rating'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.rating')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Poster</label>
+              <input type="text" class="form-control" name="poster" value="{{ flashMessages.get('poster') || '' }}">
+
+              @if(flashMessages.has('errors.poster'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.poster')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">First image</label>
+              <input type="text" class="form-control" name="firstImage" value="{{ flashMessages.get('firstImage') || '' }}">
+
+              @if(flashMessages.has('errors.firstImage'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.firstImage')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Second image</label>
+              <input type="text" class="form-control" name="secondImage" value="{{ flashMessages.get('secondImage') || '' }}">
+
+              @if(flashMessages.has('errors.secondImage'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.secondImage')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Third image</label>
+              <input type="text" class="form-control" name="thirdImage" value="{{ flashMessages.get('thirdImage') || '' }}">
+
+              @if(flashMessages.has('errors.thirdImage'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.thirdImage')[0] }}
+                </div>
+              @endif
+            </div>
+
+            {{ csrfField() }}
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary btn-block">Create</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+  <script src="/js/countries.js"></script>
+  <script src="/vendor/pickadate/picker.js"></script>
+  <script src="/vendor/pickadate/picker.time.js"></script>
+  <script src="/vendor/pickadate/picker.date.js"></script>
+  <script src="/js/plugins-init/pickadate-init.js"></script>
+@endsection

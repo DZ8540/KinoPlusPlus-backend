@@ -1,0 +1,17 @@
+@layout('layouts/index')
+
+@set('title', 'Dashboard')
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <form action="{{ route('syncVideos.sync') }}" method="POST">
+          {{ csrfField() }}
+
+          <button type="submit" class="btn btn-primary">Sync all videos</button>
+        </form>
+      </div>
+    </div>
+  </div>
+@endsection

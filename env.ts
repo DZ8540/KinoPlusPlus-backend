@@ -29,4 +29,7 @@ export default Env.rules({
   PG_USER: Env.schema.string(),
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
+
+  MAIN_DATA_API_API_TOKEN: Env.schema.string(),
+  VIDEO_API_TOKEN: Env.schema.string(),
 })
