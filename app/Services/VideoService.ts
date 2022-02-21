@@ -11,23 +11,20 @@ type NewestPayload = NewestValidator['schema']['props']
 type PopularPayload = PopularValidator['schema']['props']
 
 export default class VideoService {
-  public static async paginate(config: PaginateConfig<typeof Video['columns'][number]>): Promise<Video[]> {
-    if (!config.columns)
-      config.columns = ['id', 'slug', 'name', 'description', 'released', 'country', 'rating', 'poster']
-
+  public static async paginate(config: PaginateConfig<typeof Video['columns'][number]>, columns: typeof Video['columns'][number][] = []): Promise<Video[]> {
     try {
-      return await Video.query().select(config.columns).get(config)
+      return await Video.query().select(columns).paginate(config)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async get(config: ServiceConfig<Video>): Promise<Video> {
+  public static async get(id: Video['id'], config: ServiceConfig<Video> = {}): Promise<Video> {
     let item: Video | null
 
     try {
-      item = await Video.findBy(config.column, config.val, { client: config.trx })
+      item = await Video.find(id, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
@@ -59,11 +56,11 @@ export default class VideoService {
     }
   }
 
-  public static async update(config: ServiceConfig<Video>, payload: VideoPayload): Promise<Video> {
+  public static async update(id: Video['id'], payload: VideoPayload, config: ServiceConfig<Video> = {}): Promise<Video> {
     let item: Video
 
     try {
-      item = await this.get(config)
+      item = await this.get(id, config)
     } catch (err: Error | any) {
       throw err
     }
@@ -76,11 +73,11 @@ export default class VideoService {
     }
   }
 
-  public static async delete(config: ServiceConfig<Video>): Promise<void> {
+  public static async delete(id: Video['id'], config: ServiceConfig<Video> = {}): Promise<void> {
     let item: Video
 
     try {
-      item = await this.get(config)
+      item = await this.get(id, config)
     } catch (err: Error | any) {
       throw err
     }
@@ -109,7 +106,7 @@ export default class VideoService {
       payload.limit = 10
 
     try {
-      return await Video.query().limit(payload.limit).orderBy('released', 'desc')
+      return await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'released', orderBy: 'desc' })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
@@ -121,7 +118,7 @@ export default class VideoService {
       payload.limit = 20
 
     try {
-      return await Video.query().limit(payload.limit).orderBy('viewsCount', 'desc')
+      return await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

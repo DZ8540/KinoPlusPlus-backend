@@ -11,15 +11,18 @@ export default class AppProvider {
 
   public async boot () {
     // IoC container is ready
-
     const {
       ModelQueryBuilder
     } = this.app.container.use('Adonis/Lucid/Database')
 
-    ModelQueryBuilder.macro('get', async function({ page, limit, orderByColumn, orderBy, baseURL }: PaginationConfig) {
-      orderByColumn = orderByColumn ?? 'id'
+    ModelQueryBuilder.macro('paginate', async function(config: PaginationConfig) {
+      config.orderByColumn = config.orderByColumn ?? 'id'
+      let result = await this.orderBy(config.orderByColumn, config.orderBy).paginate(config.page, config.limit)
 
-      return (await this.orderBy(orderByColumn, orderBy).paginate(page, limit)).baseUrl(baseURL)
+      if (config.baseURL)
+        return result.baseUrl(config.baseURL)
+
+      return result
     })
   }
 

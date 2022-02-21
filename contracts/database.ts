@@ -5,13 +5,13 @@ declare module '@ioc:Adonis/Lucid/Orm' {
     Model extends LucidModel,
     Result = InstanceType<Model>
   > {
-    get(config: PaginationConfig): Promise<Result extends LucidRow ? ModelPaginatorContract<Result> : SimplePaginatorContract<Result>>,
+    paginate(config: PaginationConfig): Promise<Result extends LucidRow ? ModelPaginatorContract<Result> : SimplePaginatorContract<Result>>,
   }
 }
 
 export type PaginationConfig = {
   page: number,
-  baseURL: string,
+  baseURL?: string,
   limit?: number,
   orderByColumn?: string,
   orderBy?: 'asc' | 'desc',

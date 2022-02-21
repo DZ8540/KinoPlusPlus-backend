@@ -10,7 +10,7 @@ export default class VideosController {
     try {
       let baseURL: string = route!.pattern
       let page: number = request.input('page', 1)
-      let videos: Video[] = await VideoService.paginate({ baseURL, page })
+      let videos: Video[] = await VideoService.paginate({ baseURL, page }, ['id', 'slug', 'name', 'description', 'released', 'country', 'rating', 'poster'])
 
       return view.render('pages/videos/index', { videos })
     } catch (err: Error | any) {
@@ -41,7 +41,7 @@ export default class VideosController {
     let id: Video['id'] = params.id
 
     try {
-      let item: Video = await VideoService.get({ column: 'id', val: id })
+      let item: Video = await VideoService.get(id)
 
       return view.render('pages/videos/show', { item })
     } catch (err: Error | any) {
@@ -54,7 +54,7 @@ export default class VideosController {
     let id: Video['id'] = params.id
 
     try {
-      let item: Video = await VideoService.get({ column: 'id', val: id })
+      let item: Video = await VideoService.get(id)
 
       return view.render('pages/videos/edit', { item })
     } catch (err: Error | any) {
@@ -68,7 +68,7 @@ export default class VideosController {
     let payload = await request.validate(VideoValidator)
 
     try {
-      await VideoService.update({ column: 'id', val: id }, payload)
+      await VideoService.update(id, payload)
 
       session.flash('success', ResponseMessages.VIDEO_UPDATED)
       return response.redirect().toRoute('videos.index')
@@ -82,7 +82,7 @@ export default class VideosController {
     let id: Video['id'] = params.id
 
     try {
-      await VideoService.delete({ column: 'id', val: id })
+      await VideoService.delete(id)
 
       session.flash('success', ResponseMessages.VIDEO_DELETED)
     } catch (err: Error | any) {
