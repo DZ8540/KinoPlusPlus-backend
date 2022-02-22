@@ -3,34 +3,21 @@ import VideoService from 'App/Services/VideoService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
-import GetObjectValidator from 'App/Validators/GetObjectValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
 import { Error } from 'Contracts/services'
+import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class VideosController {
-  public async get({ request, response }: HttpContextContract) {
-    let payload: GetObjectValidator['schema']['props']
+  public async get({ params, response }: HttpContextContract) {
+    let id: Video['id'] = params.id
 
     try {
-      payload = await request.validate(GetObjectValidator)
-
-      if (!payload.column)
-        payload.column = 'id' as typeof Video['columns'][number]
-    } catch (err: any) {
-      throw new ExceptionService({
-        code: ResponseCodes.VALIDATION_ERROR,
-        msg: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages
-      } as Error)
-    }
-
-    try {
-      let item: Video = await VideoService.get({ column: payload.column, val: payload.val })
+      let item: Video = await VideoService.get(id)
       item = await VideoService.incrementViewsCount(item)
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item.serialize()))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
@@ -51,8 +38,9 @@ export default class VideosController {
 
     try {
       let data: Video[] = await VideoService.getNewest(payload)
+      let jsonData: ModelObject[] = data.map((item) => item.serialize())
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, data))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, jsonData))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
@@ -73,8 +61,9 @@ export default class VideosController {
 
     try {
       let data: Video[] = await VideoService.getPopular(payload)
+      let jsonData: ModelObject[] = data.map((item) => item.serialize())
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, data))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, jsonData))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

@@ -1,6 +1,6 @@
 import Video from 'App/Models/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
-import VideoValidator from 'App/Validators/VideoValidator'
+import VideoValidator from 'App/Validators/Video/VideoValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
 import { ResponseCodes, ResponseMessages } from 'Config/response'

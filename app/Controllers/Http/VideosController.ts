@@ -1,6 +1,6 @@
 import Video from 'App/Models/Video'
 import VideoService from 'App/Services/VideoService'
-import VideoValidator from 'App/Validators/VideoValidator'
+import VideoValidator from 'App/Validators/Video/VideoValidator'
 import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'

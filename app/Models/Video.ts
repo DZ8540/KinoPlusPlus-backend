@@ -45,28 +45,35 @@ export default class Video extends BaseModel {
   @column()
   public viewsCount: number
 
-  @column()
+  @column({ serializeAs: null })
   public isSerial: boolean
 
-  @column()
+  @column({ serializeAs: null })
   public firstImage: string | undefined
 
-  @column()
+  @column({ serializeAs: null })
   public secondImage: string | undefined
 
-  @column()
+  @column({ serializeAs: null })
   public thirdImage: string | undefined
 
-  @column()
+  @column({ serializeAs: null })
   public trailer: string | undefined
 
-  @column()
+  @column({ serializeAs: null })
   public poster: string | undefined
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({
+    autoCreate: true,
+    serializeAs: null,
+  })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: null,
+  })
   public updatedAt: DateTime
 
   @computed()
