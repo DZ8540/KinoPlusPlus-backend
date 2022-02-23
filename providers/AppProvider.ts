@@ -15,7 +15,7 @@ export default class AppProvider {
       ModelQueryBuilder
     } = this.app.container.use('Adonis/Lucid/Database')
 
-    ModelQueryBuilder.macro('paginate', async function(config: PaginationConfig) {
+    ModelQueryBuilder.macro('getViaPaginate', async function(config: PaginationConfig) {
       config.orderByColumn = config.orderByColumn ?? 'id'
       let result = await this.orderBy(config.orderByColumn, config.orderBy).paginate(config.page, config.limit)
 

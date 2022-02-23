@@ -34,9 +34,11 @@ Route.group(() => {
 // * Api
 Route.group(() => {
   Route.group(() => {
-    Route.post('/:id', 'Api/VideosController.get')
+
     Route.post('/newest/', 'Api/VideosController.getNewest')
     Route.post('/popular/', 'Api/VideosController.getPopular')
+    Route.post('/:id', 'Api/VideosController.get')
+
   }).prefix('/videos')
 }).prefix('/api')
 // * Api

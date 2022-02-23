@@ -5,7 +5,6 @@ import ExceptionService from 'App/Services/ExceptionService'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
 import { Error } from 'Contracts/services'
-import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -38,9 +37,8 @@ export default class VideosController {
 
     try {
       let data: Video[] = await VideoService.getNewest(payload)
-      let jsonData: ModelObject[] = data.map((item) => item.serialize())
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, jsonData))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, data))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
@@ -61,9 +59,8 @@ export default class VideosController {
 
     try {
       let data: Video[] = await VideoService.getPopular(payload)
-      let jsonData: ModelObject[] = data.map((item) => item.serialize())
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, jsonData))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, data))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

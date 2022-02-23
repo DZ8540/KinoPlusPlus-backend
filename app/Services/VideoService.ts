@@ -6,14 +6,15 @@ import PopularValidator from 'App/Validators/Video/PopularValidator'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
+type VideoColumns = typeof Video['columns'][number]
 type VideoPayload = VideoValidator['schema']['props']
 type NewestPayload = NewestValidator['schema']['props']
 type PopularPayload = PopularValidator['schema']['props']
 
 export default class VideoService {
-  public static async paginate(config: PaginateConfig<typeof Video['columns'][number]>, columns: typeof Video['columns'][number][] = []): Promise<Video[]> {
+  public static async paginate(config: PaginateConfig<VideoColumns>, columns: VideoColumns[] = []): Promise<Video[]> {
     try {
-      return await Video.query().select(columns).paginate(config)
+      return await Video.query().select(columns).getViaPaginate(config)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
