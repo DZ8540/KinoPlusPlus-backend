@@ -1,4 +1,4 @@
-import VideoSyncService from 'App/Services/VideoSyncService'
+import VideoSyncService from 'App/Services/Video/VideoSyncService'
 import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'

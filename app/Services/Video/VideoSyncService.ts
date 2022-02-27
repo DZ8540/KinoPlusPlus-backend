@@ -1,10 +1,10 @@
 import Video from 'App/Models/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
-import HttpClientService from './HttpClientService'
+import HttpClientService from '../HttpClientService'
 import { AgeLimits } from 'Config/video'
 import { DateTime, Duration } from 'luxon'
 import { Error } from 'Contracts/services'
-import { parseAgeLimit } from '../../helpers/video'
+import { parseAgeLimit } from '../../../helpers/video'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 export default class VideoSyncService {

@@ -37,7 +37,7 @@ Route.group(() => {
 
     Route.post('/newest/', 'Api/VideosController.getNewest')
     Route.post('/popular/', 'Api/VideosController.getPopular')
-    Route.post('/:id', 'Api/VideosController.get')
+    Route.post('/:slug', 'Api/VideosController.get')
 
   }).prefix('/videos')
 }).prefix('/api')

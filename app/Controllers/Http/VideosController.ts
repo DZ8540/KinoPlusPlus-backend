@@ -1,5 +1,5 @@
 import Video from 'App/Models/Video'
-import VideoService from 'App/Services/VideoService'
+import VideoService from 'App/Services/Video/VideoService'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
 import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Config/response'
