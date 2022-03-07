@@ -10,7 +10,9 @@ export default class VideosController {
     try {
       let baseURL: string = route!.pattern
       let page: number = request.input('page', 1)
-      let videos: Video[] = await VideoService.paginate({ baseURL, page }, ['id', 'slug', 'name', 'description', 'released', 'country', 'rating', 'poster'])
+
+      let columns: typeof Video.columns[number][] = ['id', 'slug', 'name', 'description', 'released', 'country', 'rating', 'poster']
+      let videos: Video[] = await VideoService.paginate({ baseURL, page }, columns)
 
       return view.render('pages/videos/index', { videos })
     } catch (err: Error | any) {

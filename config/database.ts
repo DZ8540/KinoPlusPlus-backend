@@ -8,6 +8,9 @@
 import Env from '@ioc:Adonis/Core/Env'
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
 
+export const VIDEOS_DESCRIPTION_LENGTH: number = 8192 as const
+export const GENRES_DESCRIPTION_LENGTH: number = 4096 as const
+
 const databaseConfig: DatabaseConfig = {
   /*
   |--------------------------------------------------------------------------

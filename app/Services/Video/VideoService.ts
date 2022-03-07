@@ -7,13 +7,13 @@ import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
-type VideoColumns = typeof Video['columns'][number]
-type VideoPayload = VideoValidator['schema']['props']
+type Columns = typeof Video['columns'][number]
+type Payload = VideoValidator['schema']['props']
 type NewestPayload = NewestValidator['schema']['props']
 type PopularPayload = PopularValidator['schema']['props']
 
 export default class VideoService {
-  public static async paginate(config: PaginateConfig<VideoColumns>, columns: VideoColumns[] = []): Promise<ModelPaginatorContract<Video>> {
+  public static async paginate(config: PaginateConfig<Columns>, columns: Columns[] = []): Promise<ModelPaginatorContract<Video>> {
     try {
       return await Video.query().select(columns).getViaPaginate(config)
     } catch (err: any) {
@@ -76,7 +76,7 @@ export default class VideoService {
     }
   }
 
-  public static async create(payload: VideoPayload): Promise<Video> {
+  public static async create(payload: Payload): Promise<Video> {
     try {
       return await Video.create(payload)
     } catch (err: any) {
@@ -85,7 +85,7 @@ export default class VideoService {
     }
   }
 
-  public static async update(id: Video['id'], payload: VideoPayload, config: ServiceConfig<Video> = {}): Promise<Video> {
+  public static async update(id: Video['id'], payload: Payload, config: ServiceConfig<Video> = {}): Promise<Video> {
     let item: Video
 
     try {

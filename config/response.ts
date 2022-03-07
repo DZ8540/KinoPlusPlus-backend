@@ -20,6 +20,11 @@ export enum ResponseMessages {
   VIDEO_DELETED = 'Video has been deleted!',
   VIDEO_NOT_FOUND = 'Video is not found!',
 
+  GENRE_CREATED = 'Genre has been created!',
+  GENRE_UPDATED = 'Genre has been updated!',
+  GENRE_DELETED = 'Genre has been deleted!',
+  GENRE_NOT_FOUND = 'Genre is not found!',
+
   // * Error
   ERROR = 'Something went wrong, please repeat!',
   VALIDATION_ERROR = 'Please fill all inputs correctly!',

@@ -14,10 +14,10 @@ export default class VideosController {
     let slug: Video['slug'] = params.slug
 
     try {
-      let item: Video = await VideoService.getBySlug(slug)
+      let item: Video = await VideoService.getBySlug(slug, { relations: ['genres'] })
       item = await VideoService.incrementViewsCount(item)
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item.serialize()))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item.serializeForSinglePage()))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

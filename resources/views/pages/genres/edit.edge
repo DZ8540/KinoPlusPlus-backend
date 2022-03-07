@@ -1,0 +1,90 @@
+@layout('layouts/index')
+
+@set('title', `Genre - ${item.name}`)
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+
+        <a href="{{ route('genres.index') }}" class="btn btn-primary btn-sm">Back</a>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+          <form action="{{ route('genres.update', { id: item.slug }, { qs: { _method: 'PATCH' } }) }}" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+              <label class="mb-1">Slug</label>
+              <input type="string" class="form-control" name="slug" value="{{ flashMessages.get('slug', item.slug) }}">
+
+              @if(flashMessages.has('errors.slug'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.slug')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Name *</strong></label>
+              <input type="string" class="form-control" name="name" value="{{ flashMessages.get('name', item.name) }}">
+
+              @if(flashMessages.has('errors.name'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.name')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Description *</strong></label>
+              <textarea id="summernote" class="summernote" name="description">{{ flashMessages.get('description', item.description) }}</textarea>
+
+              @if(flashMessages.has('errors.description'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.description')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Current image</label>
+              <br>
+              <img src="{{ await item.imageForUser() }}" width="350" height="400" style="object-fit: cover" alt="">
+            </div>
+
+            <div class="form-group">
+              <div class="custom-file">
+                <input type="file" name="image" class="custom-file-input">
+                <label class="custom-file-label">Image</label>
+              </div>
+
+              @if(flashMessages.has('errors.image'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.image')[0] }}
+                </div>
+              @endif
+            </div>
+
+            {{ csrfField() }}
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary btn-block">Update</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+@endsection

@@ -7,7 +7,7 @@ export default class ResponseService {
   public message: ResponseMessages
   public body?: any
 
-  constructor(message: ResponseMessages, body: any) {
+  constructor(message: ResponseMessages, body?: any) {
     this.message = message
     this.body = body
   }

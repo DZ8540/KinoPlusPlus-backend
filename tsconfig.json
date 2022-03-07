@@ -23,7 +23,13 @@
       ],
       "Database/*": [
         "./database/*"
-      ]
+      ],
+      "Start/*": [
+        "./start/*"
+      ],
+      "Helpers/*": [
+        "./helpers/*"
+      ],
     },
     "types": [
       "@adonisjs/core",

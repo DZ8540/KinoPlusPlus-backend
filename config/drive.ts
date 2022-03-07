@@ -9,7 +9,8 @@ import Env from '@ioc:Adonis/Core/Env'
 import { DriveConfig } from '@ioc:Adonis/Core/Drive'
 import Application from '@ioc:Adonis/Core/Application'
 
-export const IMG_PLACEHOLDER: string = '/images/placeholder.jpg'
+export const IMG_PLACEHOLDER: string = '/images/placeholder.jpg' as const
+export const GENRES_IMAGES: string = './Genres' as const
 
 /*
 |--------------------------------------------------------------------------

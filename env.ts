@@ -32,4 +32,7 @@ export default Env.rules({
 
   MAIN_DATA_API_API_TOKEN: Env.schema.string(),
   VIDEO_API_TOKEN: Env.schema.string(),
+  VIDEO_API_MAX_PAGES_SYNC: Env.schema.number(),
+  VIDEO_API_START_PAGE: Env.schema.number(),
+  VIDEO_API_LIMIT_PER_PAGE_SYNC: Env.schema.number(),
 })

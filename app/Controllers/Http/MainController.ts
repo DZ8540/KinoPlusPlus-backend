@@ -14,9 +14,9 @@ export default class MainsController {
 
   public async syncVideosAction({ response, session }: HttpContextContract) {
     try {
-      await VideoSyncService.sync()
+      let videosCount: number = await VideoSyncService.sync()
 
-      session.flash('success', ResponseMessages.SUCCESS_SYNC_VIDEOS)
+      session.flash('success', `${ResponseMessages.SUCCESS_SYNC_VIDEOS} Amount - ${videosCount}`)
     } catch (err: Error | any) {
       session.flash('error', err.msg)
     }

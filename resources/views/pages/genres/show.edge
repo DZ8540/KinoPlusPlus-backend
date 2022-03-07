@@ -1,0 +1,50 @@
+@layout('layouts/index')
+
+@set('title', `Genre - ${item.name}`)
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+
+        <a href="{{ route('genres.index') }}" class="btn btn-primary btn-sm">Back</a>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+
+          <div class="form-group">
+            <label class="mb-1">Slug</label>
+            <input type="string" class="form-control" value="{{ item.slug }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Name</label>
+            <input type="string" class="form-control" value="{{ item.name }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Description</label>
+            <textarea id="summernote" class="summernote" disabled>{{ item.description }}</textarea>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="mb-1">Image</label>
+            <br>
+            <img src="{{ await item.imageForUser() }}" width="350" height="400" style="object-fit: cover" alt="">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+@endsection

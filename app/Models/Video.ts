@@ -1,8 +1,13 @@
-import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
+import Genre from './Genre'
+import CamelCaseNamingStrategy from 'Start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { camelCase } from '../../helpers'
+import { camelCase } from 'Helpers/index'
 import { IMG_PLACEHOLDER } from 'Config/drive'
-import { BaseModel, beforeCreate, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel, beforeCreate, beforeSave,
+  column, computed, ManyToMany,
+  manyToMany, ModelObject
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class Video extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -101,6 +106,11 @@ export default class Video extends BaseModel {
     return this.thirdImage ?? IMG_PLACEHOLDER
   }
 
+  @manyToMany(() => Genre, {
+    pivotTable: 'genres_videos',
+  })
+  public genres: ManyToMany<typeof Genre>
+
   @beforeCreate()
   public static async setDuration(video: Video) {
     // @ts-ignore
@@ -114,5 +124,15 @@ export default class Video extends BaseModel {
 
     if (!video.slug)
       video.slug = camelCase(`${video.name} ${video.released.year}`)
+  }
+
+  public serializeForSinglePage(): ModelObject {
+    return this.serialize({
+      relations: {
+        genres: {
+          fields: ['id', 'slug', 'name']
+        }
+      }
+    })
   }
 }

@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { VIDEOS_DESCRIPTION_LENGTH } from 'Config/database'
 
 export default class Videos extends BaseSchema {
   protected tableName = 'videos'
@@ -8,7 +9,7 @@ export default class Videos extends BaseSchema {
       table.increments('id')
       table.string('slug').unique().notNullable()
       table.string('name').notNullable()
-      table.string('description', 8192).notNullable()
+      table.string('description', VIDEOS_DESCRIPTION_LENGTH).notNullable()
       table.integer('ageLimit').unsigned().defaultTo(0).notNullable()
       table.date('released').notNullable()
       table.string('country').notNullable()
