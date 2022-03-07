@@ -15,7 +15,7 @@ export default class HttpClientService {
   }
 
   public static mainDataApiInstance() {
-    let token: string = Env.get('MAIN_DATA_API_API_TOKEN')
+    const token: string = Env.get('MAIN_DATA_API_API_TOKEN')
 
     return axios.create({
       baseURL: `https://imdb-api.com/ru/API/Title/${token}`,

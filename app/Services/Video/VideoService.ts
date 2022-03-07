@@ -2,6 +2,7 @@ import Video from 'App/Models/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
+import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -37,7 +38,7 @@ export default class VideoService {
 
     try {
       if (config.relations) {
-        for (let relationItem of config.relations) {
+        for (const relationItem of config.relations) {
           await item.load(relationItem)
         }
       }
@@ -64,7 +65,7 @@ export default class VideoService {
 
     try {
       if (config.relations) {
-        for (let relationItem of config.relations) {
+        for (const relationItem of config.relations) {
           await item.load(relationItem)
         }
       }
@@ -120,7 +121,7 @@ export default class VideoService {
   }
 
   public static async incrementViewsCount(item: Video): Promise<Video> {
-    let viewsCount: number = ++item.viewsCount
+    const viewsCount: number = ++item.viewsCount
 
     try {
       return await item.merge({ viewsCount }).save()
@@ -135,7 +136,7 @@ export default class VideoService {
       payload.limit = 10
 
     try {
-      let pagination: ModelPaginatorContract<Video> = await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'released', orderBy: 'desc' })
+      const pagination: ModelPaginatorContract<Video> = await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'released', orderBy: 'desc' })
 
       return pagination.toJSON().data
     } catch (err: any) {
@@ -149,9 +150,43 @@ export default class VideoService {
       payload.limit = 20
 
     try {
-      let pagination: ModelPaginatorContract<Video> = await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' })
+      const pagination: ModelPaginatorContract<Video> = await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' })
 
       return pagination.toJSON().data
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async search(payload: SearchValidator['schema']['props']): Promise<ModelPaginatorContract<Video>> {
+    let query = Video.query()
+
+    if (!payload.limit)
+      payload.limit = 20
+
+    try {
+      for (const key in payload) {
+        switch (key) {
+          case 'genres':
+
+            if (payload[key]) {
+              for (const genreId of payload[key]!) {
+
+                query = query.orWhereHas('genres', (query) => {
+                  query.where('genre_id', genreId)
+                })
+
+              }
+            }
+            break
+
+          default:
+            break
+        }
+      }
+
+      return await query.getViaPaginate(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

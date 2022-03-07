@@ -18,6 +18,7 @@
 |
 */
 
+import './routes/api'
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.on('/').redirect('index')
@@ -30,26 +31,11 @@ Route.group(() => {
 
   Route.resource('/genres', 'GenresController')
 
-  Route.get('/syncVideos', 'MainController.syncVideos').as('syncVideos.index')
-  Route.post('/syncVideos', 'MainController.syncVideosAction').as('syncVideos.sync')
+  Route.group(() => {
+
+    Route.get('/', 'MainController.syncVideos').as('index')
+    Route.post('/', 'MainController.syncVideosAction').as('sync')
+
+  }).prefix('/syncVideos').as('syncVideos')
 
 }).prefix('/admin')
-
-// * Api
-Route.group(() => {
-  Route.group(() => {
-
-    Route.post('/newest/', 'Api/VideosController.getNewest')
-    Route.post('/popular/', 'Api/VideosController.getPopular')
-    Route.post('/:slug', 'Api/VideosController.get')
-
-  }).prefix('/videos')
-
-  Route.group(() => {
-
-    Route.post('/', 'Api/GenresController.getAll')
-    Route.post('/:slug', 'Api/GenresController.get')
-
-  }).prefix('/genres')
-}).prefix('/api')
-// * Api

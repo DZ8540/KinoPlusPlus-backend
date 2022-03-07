@@ -8,11 +8,11 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class VideosController {
   public async index({ response, view, session, route, request }: HttpContextContract) {
     try {
-      let baseURL: string = route!.pattern
-      let page: number = request.input('page', 1)
+      const baseURL: string = route!.pattern
+      const page: number = request.input('page', 1)
 
-      let columns: typeof Video.columns[number][] = ['id', 'slug', 'name', 'description', 'released', 'country', 'rating', 'poster']
-      let videos: Video[] = await VideoService.paginate({ baseURL, page }, columns)
+      const columns: typeof Video.columns[number][] = ['id', 'slug', 'name', 'description', 'released', 'country', 'rating', 'poster']
+      const videos: Video[] = await VideoService.paginate({ baseURL, page }, columns)
 
       return view.render('pages/videos/index', { videos })
     } catch (err: Error | any) {
@@ -26,7 +26,7 @@ export default class VideosController {
   }
 
   public async store({ session, response, request }: HttpContextContract) {
-    let payload = await request.validate(VideoValidator)
+    const payload = await request.validate(VideoValidator)
 
     try {
       await VideoService.create(payload)
@@ -40,10 +40,10 @@ export default class VideosController {
   }
 
   public async show({ session, response, view, params }: HttpContextContract) {
-    let id: Video['id'] = params.id
+    const id: Video['id'] = params.id
 
     try {
-      let item: Video = await VideoService.get(id)
+      const item: Video = await VideoService.get(id)
 
       return view.render('pages/videos/show', { item })
     } catch (err: Error | any) {
@@ -53,10 +53,10 @@ export default class VideosController {
   }
 
   public async edit({ params, session, view, response }: HttpContextContract) {
-    let id: Video['id'] = params.id
+    const id: Video['id'] = params.id
 
     try {
-      let item: Video = await VideoService.get(id)
+      const item: Video = await VideoService.get(id)
 
       return view.render('pages/videos/edit', { item })
     } catch (err: Error | any) {
@@ -66,8 +66,8 @@ export default class VideosController {
   }
 
   public async update({ params, session, response, request }: HttpContextContract) {
-    let id: Video['id'] = params.id
-    let payload = await request.validate(VideoValidator)
+    const id: Video['id'] = params.id
+    const payload = await request.validate(VideoValidator)
 
     try {
       await VideoService.update(id, payload)
@@ -81,7 +81,7 @@ export default class VideosController {
   }
 
   public async destroy({ params, response, session }: HttpContextContract) {
-    let id: Video['id'] = params.id
+    const id: Video['id'] = params.id
 
     try {
       await VideoService.delete(id)

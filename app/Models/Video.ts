@@ -1,8 +1,8 @@
 import Genre from './Genre'
-import CamelCaseNamingStrategy from 'Start/CamelCaseNamingStrategy'
+import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { camelCase } from 'Helpers/index'
 import { IMG_PLACEHOLDER } from 'Config/drive'
+import { camelCase } from '../../helpers/index'
 import {
   BaseModel, beforeCreate, beforeSave,
   column, computed, ManyToMany,

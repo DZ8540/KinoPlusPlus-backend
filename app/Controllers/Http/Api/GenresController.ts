@@ -9,7 +9,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class GenresController {
   public async getAll({ response }: HttpContextContract) {
     try {
-      let genres: Genre[] = await GenreService.getAll()
+      const genres: Genre[] = await GenreService.getAll()
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, genres))
     } catch (err: Error | any) {
@@ -18,10 +18,10 @@ export default class GenresController {
   }
 
   public async get({ params, response }: HttpContextContract) {
-    let slug: Genre['slug'] = params.slug
+    const slug: Genre['slug'] = params.slug
 
     try {
-      let item: Genre = await GenreService.get(slug)
+      const item: Genre = await GenreService.get(slug)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
     } catch (err: Error | any) {

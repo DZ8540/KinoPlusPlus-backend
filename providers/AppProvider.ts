@@ -17,7 +17,7 @@ export default class AppProvider {
 
     ModelQueryBuilder.macro('getViaPaginate', async function(config: PaginationConfig) {
       config.orderByColumn = config.orderByColumn ?? 'id'
-      let result = await this.orderBy(config.orderByColumn, config.orderBy).paginate(config.page, config.limit)
+      const result = await this.orderBy(config.orderByColumn, config.orderBy).paginate(config.page, config.limit)
 
       if (config.baseURL)
         return result.baseUrl(config.baseURL)

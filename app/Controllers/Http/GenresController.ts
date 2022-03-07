@@ -7,7 +7,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class GenresController {
   public async index({ response, view, session }: HttpContextContract) {
     try {
-      let genres: Genre[] = await GenreService.getAll()
+      const genres: Genre[] = await GenreService.getAll()
 
       return view.render('pages/genres/index', { genres })
     } catch (err: Error | any) {
@@ -21,7 +21,7 @@ export default class GenresController {
   }
 
   public async store({ session, response, request }: HttpContextContract) {
-    let payload = await request.validate(GenreValidator)
+    const payload = await request.validate(GenreValidator)
 
     try {
       await GenreService.create(payload)
@@ -35,10 +35,10 @@ export default class GenresController {
   }
 
   public async show({ session, response, view, params }: HttpContextContract) {
-    let slug: Genre['slug'] = params.id
+    const slug: Genre['slug'] = params.id
 
     try {
-      let item: Genre = await GenreService.get(slug)
+      const item: Genre = await GenreService.get(slug)
 
       return view.render('pages/genres/show', { item })
     } catch (err: Error | any) {
@@ -48,10 +48,10 @@ export default class GenresController {
   }
 
   public async edit({ params, session, view, response }: HttpContextContract) {
-    let slug: Genre['slug'] = params.id
+    const slug: Genre['slug'] = params.id
 
     try {
-      let item: Genre = await GenreService.get(slug)
+      const item: Genre = await GenreService.get(slug)
 
       return view.render('pages/genres/edit', { item })
     } catch (err: Error | any) {
@@ -61,8 +61,8 @@ export default class GenresController {
   }
 
   public async update({ params, session, response, request }: HttpContextContract) {
-    let slug: Genre['slug'] = params.id
-    let payload = await request.validate(GenreValidator)
+    const slug: Genre['slug'] = params.id
+    const payload = await request.validate(GenreValidator)
 
     try {
       await GenreService.update(slug, payload)
@@ -76,7 +76,7 @@ export default class GenresController {
   }
 
   public async destroy({ params, response, session }: HttpContextContract) {
-    let slug: Genre['slug'] = params.id
+    const slug: Genre['slug'] = params.id
 
     try {
       await GenreService.delete(slug)
