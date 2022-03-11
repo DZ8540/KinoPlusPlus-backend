@@ -38,9 +38,9 @@ export default class GenresController {
     const slug: Genre['slug'] = params.id
 
     try {
-      const item: Genre = await GenreService.get(slug)
+      const genreData = await GenreService.get(slug, { withShowOnMainPage: true })
 
-      return view.render('pages/genres/show', { item })
+      return view.render('pages/genres/show', { item: genreData.genre, showOnMainPage: genreData.showOnMainPage })
     } catch (err: Error | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
@@ -51,9 +51,9 @@ export default class GenresController {
     const slug: Genre['slug'] = params.id
 
     try {
-      const item: Genre = await GenreService.get(slug)
+      const genreData = await GenreService.get(slug, { withShowOnMainPage: true })
 
-      return view.render('pages/genres/edit', { item })
+      return view.render('pages/genres/edit', { item: genreData.genre, showOnMainPage: genreData.showOnMainPage })
     } catch (err: Error | any) {
       session.flash('error', err.msg)
       return response.redirect().back()

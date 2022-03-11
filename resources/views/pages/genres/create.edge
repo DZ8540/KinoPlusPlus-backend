@@ -64,6 +64,11 @@
               @endif
             </div>
 
+            <div class="custom-control custom-checkbox mb-3 checkbox-success">
+              <input type="checkbox" class="custom-control-input" id="isShowOnMainPage" {{ flashMessages.get('isShowOnMainPage') ? 'checked' : '' }} name="isShowOnMainPage">
+              <label class="custom-control-label" for="isShowOnMainPage">Show on main page?</label>
+            </div>
+
             {{ csrfField() }}
 
             <div class="text-right">

@@ -13,6 +13,7 @@ Route.group(() => {
   Route.group(() => {
 
     Route.post('/', 'Api/GenresController.getAll')
+    Route.post('/showOnMainPage', 'Api/GenresController.showOnMainPage')
     Route.post('/:slug', 'Api/GenresController.get')
 
   }).prefix('/genres')

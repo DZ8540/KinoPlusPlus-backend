@@ -47,7 +47,8 @@ export default class GenreValidator extends BaseValidator {
     ]),
     image: schema.file.optional({
       extnames: ['png', 'jpeg', 'jpg', 'webp'],
-    })
+    }),
+    isShowOnMainPage: schema.boolean.optional(),
   })
 
   /**

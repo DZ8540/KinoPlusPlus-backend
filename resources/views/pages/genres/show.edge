@@ -38,6 +38,11 @@
             <img src="{{ await item.imageForUser() }}" width="350" height="400" style="object-fit: cover" alt="">
           </div>
 
+          <div class="custom-control custom-checkbox mb-3 checkbox-success">
+            <input type="checkbox" class="custom-control-input" {{ showOnMainPage ? 'checked' : '' }} disabled>
+            <label class="custom-control-label">Show on main page?</label>
+          </div>
+
         </div>
       </div>
     </div>

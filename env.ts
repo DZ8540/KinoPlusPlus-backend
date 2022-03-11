@@ -30,6 +30,10 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
 
+  MONGO_HOST: Env.schema.string({ format: 'host' }),
+  MONGO_PORT: Env.schema.number(),
+  MONGO_DB_NAME: Env.schema.string(),
+
   MAIN_DATA_API_API_TOKEN: Env.schema.string(),
   VIDEO_API_TOKEN: Env.schema.string(),
   VIDEO_API_MAX_PAGES_SYNC: Env.schema.number(),

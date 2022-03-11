@@ -17,11 +17,21 @@ export default class GenresController {
     }
   }
 
+  public async showOnMainPage({ response }: HttpContextContract) {
+    try {
+      const genres: Genre[] = await GenreService.getAllGenresOnMainPage()
+
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, genres))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
   public async get({ params, response }: HttpContextContract) {
     const slug: Genre['slug'] = params.slug
 
     try {
-      const item: Genre = await GenreService.get(slug)
+      const item: Genre = (await GenreService.get(slug)).genre
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
     } catch (err: Error | any) {

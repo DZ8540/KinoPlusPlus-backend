@@ -7,10 +7,10 @@ import HttpClientService from '../HttpClientService'
 import GenreValidator from 'App/Validators/GenreValidator'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import { AxiosResponse } from 'axios'
-import { camelCase } from 'Helpers/index'
 import { DateTime, Duration } from 'luxon'
 import { Error } from 'Contracts/services'
-import { parseAgeLimit } from 'Helpers/video'
+import { camelCase } from '../../../helpers/index'
+import { parseAgeLimit } from '../../../helpers/video'
 import { ModelAttributes } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
@@ -111,13 +111,14 @@ export default class VideoSyncService {
         const itemSlug: string = camelCase(item)
 
         try {
-          genre = await GenreService.get(itemSlug)
+          genre = (await GenreService.get(itemSlug)).genre
         } catch (err: Error | any) {
           const payload: GenreValidator['schema']['props'] = {
             name: item,
             slug: itemSlug,
             description: DEFAULT_GENRE_DESCRIPTION,
             image: undefined,
+            isShowOnMainPage: undefined,
           }
 
           genre = await GenreService.create(payload, { trx })

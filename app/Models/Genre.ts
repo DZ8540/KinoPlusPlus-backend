@@ -56,4 +56,15 @@ export default class Genre extends BaseModel {
   public async imageForUser(): Promise<string> {
     return this.image ? await Drive.getUrl(this.image) : IMG_PLACEHOLDER
   }
+
+  // public async serialize(): Promise<ModelObject> {
+  //   const serializedItem: ModelObject = super.serialize()
+  //   let showOnMainPage: boolean
+
+  //   const itemFromMongo = await GenresOnMainPage.findOne({ genreId: serializedItem.id })
+  //   showOnMainPage = !!itemFromMongo // * Cast to boolean
+
+  //   serializedItem.showOnMainPage = showOnMainPage
+  //   return serializedItem
+  // }
 }
