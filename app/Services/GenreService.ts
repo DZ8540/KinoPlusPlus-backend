@@ -11,18 +11,31 @@ import { ResponseCodes, ResponseMessages } from 'Config/response'
 type Columns = typeof Genre.columns[number][]
 type Payload = GenreValidator['schema']['props']
 
+type GetAllMethodConfig = {
+  withMoviesCount?: boolean,
+}
+
 type GetMethodConfig = ServiceConfig<Genre> & {
   withShowOnMainPage?: boolean,
 }
+
 type GetMethodReturn = {
   genre: Genre,
   showOnMainPage: boolean,
 }
 
 export default class GenreService {
-  public static async getAll(columns: Columns = []): Promise<Genre[]> {
+  public static async getAll(columns: Columns = [], config: GetAllMethodConfig = {}): Promise<Genre[]> {
+    let query = Genre.query().select(columns).orderBy('id')
+
+    if (config.withMoviesCount) {
+      query = query.withCount('videos', (query) => {
+        query.as('moviesCount')
+      })
+    }
+
     try {
-      return await Genre.query().select(columns).orderBy('id')
+      return await query
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

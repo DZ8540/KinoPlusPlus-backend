@@ -9,7 +9,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class GenresController {
   public async getAll({ response }: HttpContextContract) {
     try {
-      const genres: Genre[] = await GenreService.getAll()
+      const genres: Genre[] = await GenreService.getAll([], { withMoviesCount: true })
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, genres))
     } catch (err: Error | any) {

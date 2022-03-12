@@ -29,6 +29,12 @@ export default class Genre extends BaseModel {
   @column()
   public image?: string
 
+  /**
+   * * For aggregate movies count
+   */
+  @column()
+  public moviesCount?: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
