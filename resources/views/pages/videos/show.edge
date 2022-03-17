@@ -54,25 +54,25 @@
           <div class="form-group mb-3">
             <label class="mb-1">Poster</label>
             <br>
-            <img src="{{ item.posterForUser }}" width="350" height="600" alt="">
+            <img src="{{ getImage(item.poster) }}" width="350" height="600" alt="">
           </div>
 
           <div class="form-group mb-3">
             <label class="mb-1">First image</label>
             <br>
-            <img src="{{ item.firstImageForUser }}" width="600" height="400" alt="">
+            <img src="{{ getImage(item.firstImage) }}" width="600" height="400" alt="">
           </div>
 
           <div class="form-group mb-3">
             <label class="mb-1">Second image</label>
             <br>
-            <img src="{{ item.secondImageForUser }}" width="600" height="400" alt="">
+            <img src="{{ getImage(item.secondImage) }}" width="600" height="400" alt="">
           </div>
 
           <div class="form-group mb-3">
             <label class="mb-1">Third image</label>
             <br>
-            <img src="{{ item.thirdImageForUser }}" width="600" height="400" alt="">
+            <img src="{{ getImage(item.thirdImage) }}" width="600" height="400" alt="">
           </div>
 
         </div>

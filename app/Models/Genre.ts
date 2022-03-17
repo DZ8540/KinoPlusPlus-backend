@@ -2,9 +2,8 @@ import Video from './Video'
 import Drive from '@ioc:Adonis/Core/Drive'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { IMG_PLACEHOLDER } from 'Config/drive'
 import { camelCase } from '../../helpers/index'
-import { BaseModel, beforeSave, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { afterFetch, afterFind, BaseModel, beforeSave, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Genre extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -29,10 +28,7 @@ export default class Genre extends BaseModel {
   @column()
   public image?: string
 
-  /**
-   * * For aggregate movies count
-   */
-  @column()
+  @column() // * For aggregate movies count
   public moviesCount?: number
 
   @column.dateTime({ autoCreate: true })
@@ -45,10 +41,18 @@ export default class Genre extends BaseModel {
   })
   public updatedAt: DateTime
 
+  /**
+   * * Relations
+   */
+
   @manyToMany(() => Video, {
     pivotTable: 'genres_videos',
   })
   public videos: ManyToMany<typeof Video>
+
+  /**
+   * * Hooks
+   */
 
   @beforeSave()
   public static async setSlug(genre: Genre) {
@@ -59,8 +63,18 @@ export default class Genre extends BaseModel {
       genre.slug = camelCase(genre.name)
   }
 
-  public async imageForUser(): Promise<string> {
-    return this.image ? await Drive.getUrl(this.image) : IMG_PLACEHOLDER
+  @afterFind()
+  public static async getImageFromDrive(item: Genre) {
+    if (item.image)
+      item.image = await Drive.getUrl(item.image)
+  }
+
+  @afterFetch()
+  public static async getImagesFromDrive(genres: Genre[]) {
+    await Promise.all(genres.map(async (item: Genre) => {
+      if (item.image)
+        item.image = await Drive.getUrl(item.image)
+    }))
   }
 
   // public async serialize(): Promise<ModelObject> {

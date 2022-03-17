@@ -1,7 +1,6 @@
 import Genre from './Genre'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { IMG_PLACEHOLDER } from 'Config/drive'
 import { camelCase } from '../../helpers/index'
 import {
   BaseModel, beforeCreate, beforeSave,
@@ -81,35 +80,18 @@ export default class Video extends BaseModel {
   })
   public updatedAt: DateTime
 
-  @computed()
-  public get releasedForUser(): string {
-    return this.released.toFormat('dd.MM.yyyy')
-  }
-
-  @computed()
-  public get posterForUser(): string {
-    return this.poster ?? IMG_PLACEHOLDER
-  }
-
-  @computed()
-  public get firstImageForUser(): string {
-    return this.firstImage ?? IMG_PLACEHOLDER
-  }
-
-  @computed()
-  public get secondImageForUser(): string {
-    return this.secondImage ?? IMG_PLACEHOLDER
-  }
-
-  @computed()
-  public get thirdImageForUser(): string {
-    return this.thirdImage ?? IMG_PLACEHOLDER
-  }
+  /**
+   * * Relations
+   */
 
   @manyToMany(() => Genre, {
     pivotTable: 'genres_videos',
   })
   public genres: ManyToMany<typeof Genre>
+
+  /**
+   * * Hooks
+   */
 
   @beforeCreate()
   public static async setDuration(video: Video) {
@@ -125,6 +107,19 @@ export default class Video extends BaseModel {
     if (!video.slug)
       video.slug = camelCase(`${video.name} ${video.released.year}`)
   }
+
+  /**
+   * * Computed properties
+   */
+
+  @computed()
+  public get releasedForUser(): string {
+    return this.released.toFormat('dd.MM.yyyy')
+  }
+
+  /**
+   * * Other properties
+   */
 
   public serializeForSinglePage(): ModelObject {
     return this.serialize({
