@@ -27,7 +27,34 @@ export default class UserService {
     }
 
     if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.VIDEO_NOT_FOUND } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Error
+
+    try {
+      if (config.relations) {
+        for (const relationItem of config.relations) {
+          await item.load(relationItem)
+        }
+      }
+
+      return item
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getByEmail(email: User['email'], config: ServiceConfig<User> = {}): Promise<User> {
+    let item: User | null
+
+    try {
+      item = await User.findBy('email', email, { client: config.trx })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+
+    if (!item)
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Error
 
     try {
       if (config.relations) {

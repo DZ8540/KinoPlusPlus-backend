@@ -1,0 +1,27 @@
+@layout('layouts/auth')
+
+@set('title', 'Login')
+
+@section('body')
+  <div class="auth-form">
+    <h4 class="text-center mb-4">Login to admin panel</h4>
+    <form action="{{ route('login.action') }}" method="POST">
+
+      <div class="form-group">
+        <label class="mb-1"><strong>Email</strong></label>
+        <input type="email" class="form-control" name="email" value="{{ flashMessages.get('email') || '' }}" placeholder="hello@example.com">
+      </div>
+
+      {{ csrfField() }}
+
+      <div class="form-group">
+        <label class="mb-1"><strong>Password</strong></label>
+        <input type="password" class="form-control" name="password" placeholder="********">
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </div>
+    </form>
+  </div>
+@endsection

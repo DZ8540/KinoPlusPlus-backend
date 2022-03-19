@@ -9,6 +9,8 @@ import Env from '@ioc:Adonis/Core/Env'
 import Application from '@ioc:Adonis/Core/Application'
 import { SessionConfig } from '@ioc:Adonis/Addons/Session'
 
+export const SESSION_USER_KEY: string = 'user'
+
 const sessionConfig: SessionConfig = {
   /*
   |--------------------------------------------------------------------------

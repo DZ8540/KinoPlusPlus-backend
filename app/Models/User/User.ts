@@ -1,7 +1,9 @@
 import Role from './Role'
 import Hash from '@ioc:Adonis/Core/Hash'
+import RoleService from 'App/Services/User/RoleService'
 import { DateTime } from 'luxon'
-import { RoleTypes } from 'Config/role'
+import { Error } from 'Contracts/services'
+import { RoleTypes, ROLE_TYPES } from 'Config/role'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
   BaseModel, beforeCreate, beforeSave,
@@ -117,7 +119,16 @@ export default class User extends BaseModel {
 
   @beforeCreate()
   public static async setRole(item: User) {
-    if (!item.roleId)
-      item.roleId = RoleTypes.USER
+    if (!item.roleId) {
+      const userRoleName: Role['name'] = ROLE_TYPES[RoleTypes.USER]
+
+      try {
+        const { id } = await RoleService.getByName(userRoleName)
+
+        item.roleId = id
+      } catch (err: Error | any) {
+        throw err
+      }
+    }
   }
 }

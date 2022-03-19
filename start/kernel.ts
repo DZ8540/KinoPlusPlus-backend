@@ -42,4 +42,5 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
+  CheckAdminPanelAccess: () => import('App/Middleware/CheckAdminPanelAccess'),
 })

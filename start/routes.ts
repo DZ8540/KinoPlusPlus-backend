@@ -19,6 +19,7 @@
 */
 
 import './routes/api'
+import './routes/auth'
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.on('/').redirect('index')
@@ -46,4 +47,4 @@ Route.group(() => {
 
   }).prefix('/users').as('users')
 
-}).prefix('/admin')
+}).prefix('/admin').middleware('CheckAdminPanelAccess')
