@@ -1,17 +1,23 @@
 import Video from './Video'
 import Drive from '@ioc:Adonis/Core/Drive'
-import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { camelCase } from '../../helpers/index'
-import { afterFetch, afterFind, BaseModel, beforeSave, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { camelCase } from 'Helpers/index'
+import {
+  afterFetch, afterFind, BaseModel,
+  beforeSave, column, ManyToMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class Genre extends BaseModel {
-  public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = [
     'id', 'slug', 'name',
     'description', 'image', 'createdAt',
     'updatedAt',
   ] as const
+
+  /**
+   * * Columns
+   */
 
   @column({ isPrimary: true })
   public id: number
@@ -28,7 +34,7 @@ export default class Genre extends BaseModel {
   @column()
   public image?: string
 
-  @column() // * For aggregate movies count
+  @column() // For aggregate movies count
   public moviesCount?: number
 
   @column.dateTime({ autoCreate: true })

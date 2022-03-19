@@ -1,7 +1,7 @@
 import Genre from './Genre'
-import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { camelCase } from '../../helpers/index'
+import { camelCase } from 'Helpers/index'
+import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
   BaseModel, beforeCreate, beforeSave,
   column, computed, ManyToMany,
@@ -9,7 +9,6 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Video extends BaseModel {
-  public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = [
     'id', 'slug', 'name',
     'description', 'released', 'country',
@@ -18,6 +17,10 @@ export default class Video extends BaseModel {
     'trailer', 'poster', 'createdAt',
     'updatedAt',
   ] as const
+
+  /**
+   * * Columns
+   */
 
   @column({ isPrimary: true })
   public id: number
@@ -90,6 +93,15 @@ export default class Video extends BaseModel {
   public genres: ManyToMany<typeof Genre>
 
   /**
+   * * Computed properties
+   */
+
+  @computed()
+  public get releasedForUser(): string {
+    return this.released.toFormat(DEFAULT_DATETIME_FORMAT)
+  }
+
+  /**
    * * Hooks
    */
 
@@ -106,15 +118,6 @@ export default class Video extends BaseModel {
 
     if (!video.slug)
       video.slug = camelCase(`${video.name} ${video.released.year}`)
-  }
-
-  /**
-   * * Computed properties
-   */
-
-  @computed()
-  public get releasedForUser(): string {
-    return this.released.toFormat('dd.MM.yyyy')
   }
 
   /**

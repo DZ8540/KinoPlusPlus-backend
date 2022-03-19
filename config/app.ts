@@ -14,6 +14,8 @@ import { ProfilerConfig } from '@ioc:Adonis/Core/Profiler'
 import { ValidatorConfig } from '@ioc:Adonis/Core/Validator'
 import { AssetsManagerConfig } from '@ioc:Adonis/Core/AssetsManager'
 
+export const DEFAULT_DATETIME_FORMAT: string = 'dd.MM.yyyy'
+
 /*
 |--------------------------------------------------------------------------
 | Application secret key

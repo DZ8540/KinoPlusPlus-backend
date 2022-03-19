@@ -8,8 +8,8 @@
 import Env from '@ioc:Adonis/Core/Env'
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
 
-export const VIDEOS_DESCRIPTION_LENGTH: number = 8192 as const
-export const GENRES_DESCRIPTION_LENGTH: number = 4096 as const
+export const VIDEOS_DESCRIPTION_LENGTH: number = 8192
+export const GENRES_DESCRIPTION_LENGTH: number = 4096
 
 const databaseConfig: DatabaseConfig = {
   /*
@@ -38,6 +38,14 @@ const databaseConfig: DatabaseConfig = {
     */
     pg: {
       client: 'pg',
+      healthCheck: false,
+      debug: false,
+      seeders: {
+        paths: ['./database/seeders/MainSeeder']
+      },
+      migrations: {
+        naturalSort: true,
+      },
       connection: {
         host: Env.get('PG_HOST'),
         port: Env.get('PG_PORT'),
@@ -45,11 +53,6 @@ const databaseConfig: DatabaseConfig = {
         password: Env.get('PG_PASSWORD', ''),
         database: Env.get('PG_DB_NAME'),
       },
-      migrations: {
-        naturalSort: true,
-      },
-      healthCheck: false,
-      debug: false,
     },
 
   }

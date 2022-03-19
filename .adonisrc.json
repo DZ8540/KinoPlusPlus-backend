@@ -11,11 +11,13 @@
     "App": "app",
     "Config": "config",
     "Database": "database",
-    "Contracts": "contracts"
+    "Contracts": "contracts",
+    "Helpers": "helpers"
   },
   "preloads": [
     "./start/routes",
     "./start/kernel",
+    "./start/database",
     {
       "file": "./start/view",
       "environment": [

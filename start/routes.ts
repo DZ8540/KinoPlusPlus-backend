@@ -38,4 +38,12 @@ Route.group(() => {
 
   }).prefix('/syncVideos').as('syncVideos')
 
+  Route.group(() => {
+
+    Route.get('/', 'UsersController.index').as('index')
+    Route.get('/:id', 'UsersController.show').as('show')
+    Route.delete('/:id', 'UsersController.destroy').as('destroy')
+
+  }).prefix('/users').as('users')
+
 }).prefix('/admin')

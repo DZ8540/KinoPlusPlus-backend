@@ -7,6 +7,11 @@ export default class Videos extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+
+      /**
+       * * Not nullable columns
+       */
+
       table.string('slug').unique().notNullable()
       table.string('name').notNullable()
       table.string('description', VIDEOS_DESCRIPTION_LENGTH).notNullable()
@@ -18,6 +23,11 @@ export default class Videos extends BaseSchema {
       table.time('duration').notNullable()
       table.integer('viewsCount').unsigned().defaultTo(0).notNullable()
       table.boolean('isSerial').defaultTo(0).notNullable()
+
+      /**
+       * * Nullable columns
+       */
+
       table.string('firstImage').nullable()
       table.string('secondImage').nullable()
       table.string('thirdImage').nullable()
@@ -25,8 +35,9 @@ export default class Videos extends BaseSchema {
       table.string('poster').nullable()
 
       /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
+       * * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
+
       table.timestamp('createdAt', { useTz: true })
       table.timestamp('updatedAt', { useTz: true })
     })
