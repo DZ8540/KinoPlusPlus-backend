@@ -26,6 +26,17 @@ export default class Users extends BaseSchema {
       table.boolean('sex').nullable().comment('0 - мужчина, 1 - женщина')
 
       /**
+       * * Foreign keys
+       */
+
+      table
+        .integer('role_id')
+        .unsigned()
+        .notNullable()
+        .references('roles.id')
+        .onDelete('CASCADE')
+
+      /**
        * * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
 

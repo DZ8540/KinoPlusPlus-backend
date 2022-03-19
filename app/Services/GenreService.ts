@@ -1,4 +1,4 @@
-import Genre from 'App/Models/Genre'
+import Genre from 'App/Models/Video/Genre'
 import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
 import GenreValidator from 'App/Validators/GenreValidator'

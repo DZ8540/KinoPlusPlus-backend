@@ -1,4 +1,4 @@
-import Genre from 'App/Models/Genre'
+import Genre from 'App/Models/Video/Genre'
 import GenreService from 'App/Services/GenreService'
 import GenreValidator from 'App/Validators/GenreValidator'
 import { ResponseMessages } from 'Config/response'

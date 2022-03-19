@@ -1,4 +1,4 @@
-import User from 'App/Models/User'
+import User from 'App/Models/User/User'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 
 export const UserFactory = Factory

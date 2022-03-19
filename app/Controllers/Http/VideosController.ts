@@ -1,4 +1,4 @@
-import Video from 'App/Models/Video'
+import Video from 'App/Models/Video/Video'
 import VideoService from 'App/Services/Video/VideoService'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
 import { Error } from 'Contracts/services'

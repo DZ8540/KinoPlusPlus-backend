@@ -1,4 +1,4 @@
-import User from 'App/Models/User'
+import User from 'App/Models/User/User'
 import Logger from '@ioc:Adonis/Core/Logger'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'

@@ -1,4 +1,4 @@
-import User from 'App/Models/User'
+import User from 'App/Models/User/User'
 import UserService from 'App/Services/UserService'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 

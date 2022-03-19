@@ -1,4 +1,4 @@
-import Video from 'App/Models/Video'
+import Video from 'App/Models/Video/Video'
 import VideoService from 'App/Services/Video/VideoService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'

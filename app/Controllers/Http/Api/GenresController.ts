@@ -1,4 +1,4 @@
-import Genre from 'App/Models/Genre'
+import Genre from 'App/Models/Video/Genre'
 import GenreService from 'App/Services/GenreService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'

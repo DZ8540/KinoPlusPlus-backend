@@ -1,4 +1,4 @@
-import Genre from '../Genre'
+import Genre from '../Video/Genre'
 import Mongoose, { Schema } from '@ioc:Mongoose'
 
 export interface GenreOnMainPage {

@@ -1,4 +1,4 @@
-import Video from 'App/Models/Video'
+import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'

@@ -1,7 +1,13 @@
+import Role from './Role'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { DateTime } from 'luxon'
+import { RoleTypes } from 'Config/role'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
-import { BaseModel, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel, beforeCreate, beforeSave,
+  BelongsTo, belongsTo, column,
+  computed,
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static readonly columns = [
@@ -42,11 +48,29 @@ export default class User extends BaseModel {
   @column()
   public sex?: boolean
 
+  /**
+   * * Foreign keys
+   */
+
+  @column({ columnName: 'role_id' })
+  public roleId: Role['id']
+
+  /**
+   * * Timestamps
+   */
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  /**
+   * * Relations
+   */
+
+  @belongsTo(() => Role)
+  public role: BelongsTo<typeof Role>
 
   /**
    * * Computed properties
@@ -89,5 +113,11 @@ export default class User extends BaseModel {
   public static async hashPassword(item: User) {
     if (item.$dirty.password)
       item.password = await Hash.make(item.password)
+  }
+
+  @beforeCreate()
+  public static async setRole(item: User) {
+    if (!item.roleId)
+      item.roleId = RoleTypes.USER
   }
 }
