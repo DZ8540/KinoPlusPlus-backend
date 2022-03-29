@@ -10,10 +10,10 @@ import { ResponseCodes } from 'Config/response'
 | a status code and error code for every exception.
 |
 | @example
-| new ServerException('message', 500, 'E_RUNTIME_EXCEPTION')
+| new ClientException('message', 500, 'E_RUNTIME_EXCEPTION')
 |
 */
-export default class ServerException extends BaseException {
-  code: ResponseCodes = ResponseCodes.SERVER_ERROR
-  status: number = 500
+export default class ClientException extends BaseException {
+  code: ResponseCodes = ResponseCodes.CLIENT_ERROR
+  status: number = 400
 }

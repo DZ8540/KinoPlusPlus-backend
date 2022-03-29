@@ -16,7 +16,7 @@ export default class AuthController {
     const payload = await request.validate(LoginValidator)
 
     try {
-      const { id } = await AuthService.login(payload)
+      const { id } = await AuthService.loginViaAdminPanel(payload)
 
       session.put(SESSION_USER_KEY, id)
       return response.redirect().toRoute('index')

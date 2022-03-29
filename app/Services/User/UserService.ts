@@ -1,5 +1,9 @@
+import authConfig from 'Config/auth'
 import User from 'App/Models/User/User'
+import TokenService from '../TokenService'
 import Logger from '@ioc:Adonis/Core/Logger'
+import RegisterValidator from 'App/Validators/Api/Auth/RegisterValidator'
+import { TokenUserPayload } from 'Contracts/token'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -64,6 +68,41 @@ export default class UserService {
       }
 
       return item
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async create(payload: RegisterValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
+    try {
+      return await User.create(payload, { client: trx })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  /**
+   * * For API
+   */
+
+  public static async activate(token: string): Promise<User> {
+    let payload: TokenUserPayload
+    let user: User
+
+    try {
+      payload = TokenService.verifyToken<TokenUserPayload>(token, authConfig.emailVerify.key)
+      user = await this.getByEmail(payload.email)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    if (user.isEmailVerified)
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ACCOUNT_ALREADY_ACTIVATED } as Error
+
+    try {
+      return await user.merge({ isEmailVerified: true }).save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

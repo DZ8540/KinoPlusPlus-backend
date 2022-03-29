@@ -1,4 +1,5 @@
 import Role from './Role'
+import Token from './Token'
 import Hash from '@ioc:Adonis/Core/Hash'
 import RoleService from 'App/Services/User/RoleService'
 import { DateTime } from 'luxon'
@@ -8,7 +9,7 @@ import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
   BaseModel, beforeCreate, beforeSave,
   BelongsTo, belongsTo, column,
-  computed,
+  computed, HasMany, hasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
@@ -35,7 +36,7 @@ export default class User extends BaseModel {
   @column()
   public isEmailVerified: boolean
 
-  @column()
+  @column({ serializeAs: null })
   public password: string
 
   @column()
@@ -73,6 +74,9 @@ export default class User extends BaseModel {
 
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
+
+  @hasMany(() => Token)
+  public tokens: HasMany<typeof Token>
 
   /**
    * * Computed properties

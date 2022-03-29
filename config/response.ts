@@ -10,10 +10,22 @@ export enum ResponseCodes {
 }
 
 export enum ResponseMessages {
-  // * Success
+  /**
+   * * Success
+   */
+
   SUCCESS = 'Success',
   SUCCESS_SYNC_VIDEOS = 'All videos successful synced!',
-  // * Success
+
+  /**
+   * * Auth
+   */
+
+  ACTIVATE_ACCOUNT = 'Thanks for registration, please activate your account, we sended instructions to your email!',
+  ACCOUNT_ALREADY_ACTIVATED = 'Your account already activated, thanks, let\'s go to login!',
+  TOKEN_ERROR = 'Token expired or undefined!',
+  MISSING_AUTH_HEADERS = 'Missing several auth headers!',
+  LOGOUT = 'You are logged out of your account!',
 
   /**
    * * Video
@@ -38,6 +50,7 @@ export enum ResponseMessages {
    */
 
   USER_NOT_FOUND = 'User not found!',
+  USER_ACTIVATED = 'Congratulations, account activated!',
 
   /**
    * * Role
@@ -45,8 +58,10 @@ export enum ResponseMessages {
 
   ROLE_NOT_FOUND = 'Role not found!',
 
-  // * Error
+  /**
+   * * Error
+   */
+
   ERROR = 'Something went wrong, please repeat!',
   VALIDATION_ERROR = 'Please fill all inputs correctly!',
-  // * Error
 }

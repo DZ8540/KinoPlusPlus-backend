@@ -24,15 +24,48 @@ export default Env.rules({
   DRIVE_DISK: Env.schema.enum(['local'] as const),
 	NODE_ENV: Env.schema.enum(['development', 'production', 'testing'] as const),
 
+  /**
+   * * Auth
+   */
+
+  ACCESS_TOKEN_KEY: Env.schema.string(),
+  ACCESS_TOKEN_EXPIRE: Env.schema.string(),
+  REFRESH_TOKEN_KEY: Env.schema.string(),
+  REFRESH_TOKEN_EXPIRE: Env.schema.string(),
+  MAIL_VERIFY_TOKEN_KEY: Env.schema.string(),
+  MAIL_VERIFY_TOKEN_EXPIRE: Env.schema.string(),
+
+  /**
+   * * Postgres
+   */
+
   PG_HOST: Env.schema.string({ format: 'host' }),
   PG_PORT: Env.schema.number(),
   PG_USER: Env.schema.string(),
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
 
+  /**
+   * * Mongo
+   */
+
   MONGO_HOST: Env.schema.string({ format: 'host' }),
   MONGO_PORT: Env.schema.number(),
   MONGO_DB_NAME: Env.schema.string(),
+
+  /**
+   * * Mailer
+   */
+
+  SMTP_HOST: Env.schema.string({ format: 'host' }),
+  SMTP_PORT: Env.schema.number(),
+  SMTP_USERNAME: Env.schema.string(),
+  SMTP_PASSWORD: Env.schema.string(),
+  SMTP_FROM: Env.schema.string(),
+
+  /**
+   * * Video API
+   */
 
   MAIN_DATA_API_API_TOKEN: Env.schema.string(),
   VIDEO_API_TOKEN: Env.schema.string(),
