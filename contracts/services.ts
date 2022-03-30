@@ -19,4 +19,5 @@ export type Error = {
   code: ResponseCodes,
   msg: ResponseMessages,
   body?: any,
+  errors?: any,
 }

@@ -20,7 +20,7 @@ export default class VideosController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages,
+        errors: err.messages,
       })
     }
 
@@ -55,7 +55,7 @@ export default class VideosController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages,
+        errors: err.messages,
       } as Error)
     }
 
@@ -77,7 +77,7 @@ export default class VideosController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages,
+        errors: err.messages,
       } as Error)
     }
 

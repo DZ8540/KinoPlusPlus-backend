@@ -22,7 +22,7 @@ export default class AuthController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages,
+        errors: err.messages,
       })
     }
 
@@ -61,7 +61,7 @@ export default class AuthController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages,
+        errors: err.messages,
       })
     }
 

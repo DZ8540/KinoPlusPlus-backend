@@ -15,11 +15,13 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 */
 export default class BaseException extends Exception {
   protected body?: any
+  protected errors?: any
 
-  constructor(message: string, body?: any, status?: number, code?: string) {
+  constructor(message: string, errors: any, body?: any, status?: number, code?: string) {
     super(message, status, code)
 
     this.body = body
+    this.errors = errors
   }
 
   public async handle(error: this, ctx: HttpContextContract) {
@@ -28,6 +30,7 @@ export default class BaseException extends Exception {
       status: error.status,
       message: error.message,
       body: error.body,
+      errors: error.errors,
     })
   }
 }

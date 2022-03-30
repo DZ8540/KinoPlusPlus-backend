@@ -11,22 +11,22 @@ export default class ExceptionService {
   constructor(err: Error) {
     switch (err.code) {
       case ResponseCodes.CLIENT_ERROR:
-        return new ClientException(err.msg, err.body)
+        return new ClientException(err.msg, err.errors, err.body)
 
       case ResponseCodes.DATABASE_ERROR:
-        return new DatabaseException(err.msg, err.body)
+        return new DatabaseException(err.msg, err.errors, err.body)
 
       case ResponseCodes.MAILER_ERROR:
-        return new MailerException(err.msg, err.body)
+        return new MailerException(err.msg, err.errors, err.body)
 
       case ResponseCodes.SERVER_ERROR:
-        return new ServerException(err.msg, err.body)
+        return new ServerException(err.msg, err.errors, err.body)
 
       case ResponseCodes.VALIDATION_ERROR:
-        return new ValidationException(err.msg, err.body)
+        return new ValidationException(err.msg, err.errors, err.body)
 
       case ResponseCodes.TOKEN_EXPIRED:
-        return new TokenException(err.msg, err.body)
+        return new TokenException(err.msg, err.errors, err.body)
 
       default:
         break;
