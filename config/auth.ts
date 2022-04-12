@@ -21,6 +21,7 @@ const authConfig: AuthConfig = {
 export const COOKIE_REFRESH_TOKEN_OPTIONS = {
   path: '/api/auth',
   maxAge: authConfig.refresh.expire,
+  httpOnly: true,
 } as const
 
 export default authConfig

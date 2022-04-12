@@ -22,7 +22,7 @@ export default class AuthController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        errors: err.messages,
+        errors: err.messages.errors,
       })
     }
 
@@ -66,11 +66,14 @@ export default class AuthController {
     }
 
     try {
-      const tokens: Tokens = await AuthService.loginViaApi(payload, headers)
+      const data: { tokens: Tokens, user: User } = await AuthService.loginViaApi(payload, headers)
 
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, tokens.refresh, COOKIE_REFRESH_TOKEN_OPTIONS)
+      response.cookie(COOKIE_REFRESH_TOKEN_KEY, data.tokens.refresh, COOKIE_REFRESH_TOKEN_OPTIONS)
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, tokens.access))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, {
+        user: data.user,
+        token: data.tokens.access,
+      }))
     } catch (err: Error | any) {
       response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
 

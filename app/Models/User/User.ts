@@ -33,7 +33,7 @@ export default class User extends BaseModel {
   @column()
   public email: string
 
-  @column()
+  @column({ serializeAs: null })
   public isEmailVerified: boolean
 
   @column({ serializeAs: null })
@@ -55,7 +55,10 @@ export default class User extends BaseModel {
    * * Foreign keys
    */
 
-  @column({ columnName: 'role_id' })
+  @column({
+    columnName: 'role_id',
+    serializeAs: null,
+  })
   public roleId: Role['id']
 
   /**

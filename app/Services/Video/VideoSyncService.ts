@@ -46,29 +46,42 @@ export default class VideoSyncService {
       }
 
       videosCount = i * limit
+      Logger.info(`${videosCount}`)
     }
 
     return videosCount
   }
 
+  /**
+   * * Private methods
+   */
+
   private static async addVideos(videos: any[]): Promise<void> {
     for (const item of videos) {
+      let genres: string
+      let arrGenresIds: Genre['id'][]
       const trx: TransactionClientContract = await Database.transaction()
       const videoPayload: Partial<ModelAttributes<Video>> = {}
-      let arrGenresIds: Genre['id'][]
-      let genres: string
 
       try {
+        let dateTimeDuration: Duration
         let videoData: any = (await HttpClientService.mainDataApiInstance().get(`/${item['imdb_id']}`)).data
-        let dateTimeDuration: Duration = Duration.fromObject({ minutes: +videoData.runtimeMins })
+
+        // * For fucking 'PT3H' string in runtimeMins, fucking imdb api suka blyat
+        // * Video The Wolf of Wall Street (4)
+        try {
+          dateTimeDuration = Duration.fromObject({ minutes: videoData.runtimeMins })
+        } catch (error) {
+          dateTimeDuration = Duration.fromObject({ minutes: 0 })
+        }
 
         videoPayload.name = item['orig_title']
-        videoPayload.description = videoData.plotLocal
+        videoPayload.description = videoData.plotLocal ?? 'None description'
         videoPayload.ageLimit = parseAgeLimit(videoData.contentRating)
         videoPayload.rating = +videoData.imDbRating
         videoPayload.released = DateTime.fromFormat(item.year, 'yyyy-MM-dd')
         videoPayload.duration = DateTime.fromISO(dateTimeDuration.toISOTime())
-        videoPayload.country = videoData.countries.toLowerCase()
+        videoPayload.country = videoData.countries?.toLowerCase()
         videoPayload.poster = videoData.image
 
         genres = videoData.genres

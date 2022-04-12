@@ -55,19 +55,19 @@ export default class Video extends BaseModel {
   @column({ serializeAs: null })
   public isSerial: boolean
 
-  @column({ serializeAs: null })
+  @column()
   public firstImage: string | undefined
 
-  @column({ serializeAs: null })
+  @column()
   public secondImage: string | undefined
 
-  @column({ serializeAs: null })
+  @column()
   public thirdImage: string | undefined
 
-  @column({ serializeAs: null })
+  @column()
   public trailer: string | undefined
 
-  @column({ serializeAs: null })
+  @column()
   public poster: string | undefined
 
   @column.dateTime({

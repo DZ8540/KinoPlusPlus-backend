@@ -70,7 +70,7 @@ export default class AuthService {
     }
   }
 
-  public static async loginViaApi(payload: LoginValidator['schema']['props'], headers: AuthHeaders): Promise<Tokens> {
+  public static async loginViaApi(payload: LoginValidator['schema']['props'], headers: AuthHeaders): Promise<{ tokens: Tokens, user: User }> {
     let user: User
 
     try {
@@ -92,7 +92,7 @@ export default class AuthService {
         token: tokens.refresh,
       })
 
-      return tokens
+      return { tokens, user }
     } catch (err: any) {
       Logger.error(err)
       throw ERROR
