@@ -1,12 +1,14 @@
 import authConfig from 'Config/auth'
 import User from 'App/Models/User/User'
 import TokenService from '../TokenService'
+import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
+import UserValidator from 'App/Validators/UserValidator'
 import RegisterValidator from 'App/Validators/Api/Auth/RegisterValidator'
 import { TokenUserPayload } from 'Contracts/token'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
 type Columns = typeof User['columns'][number]
 
@@ -77,6 +79,41 @@ export default class UserService {
   public static async create(payload: RegisterValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
     try {
       return await User.create(payload, { client: trx })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async update(id: User['id'], payload: UserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
+    let user: User
+    const userPayload: Partial<ModelAttributes<User>> = {
+      email: payload.email,
+      nickname: payload.nickname,
+      password: payload.password,
+      phone: payload.phone,
+      sex: payload.sex,
+      avatar: undefined,
+      birthday: undefined,
+    }
+
+    try {
+      user = await this.get(id, { trx })
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    if (payload.avatar) {
+      if (user.avatar) {
+        await Drive.delete(user.$original.avatar)
+      }
+
+      await payload.avatar.moveToDisk('User')
+      userPayload.avatar = `User/${payload.avatar.fileName}`
+    }
+
+    try {
+      return await user.merge(userPayload).save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

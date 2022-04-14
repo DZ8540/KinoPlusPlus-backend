@@ -51,6 +51,7 @@ export enum ResponseMessages {
 
   USER_NOT_FOUND = 'User not found!',
   USER_ACTIVATED = 'Congratulations, account activated!',
+  USER_UPDATED = 'Your profile successful updated!',
 
   /**
    * * Role

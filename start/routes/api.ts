@@ -2,6 +2,10 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
 
+  /**
+   * * Auth
+   */
+
   Route.group(() => {
 
     Route.post('/register', 'Api/AuthController.register')
@@ -13,6 +17,10 @@ Route.group(() => {
 
   }).prefix('/auth')
 
+  /**
+   * * Video
+   */
+
   Route.group(() => {
 
     Route.post('/newest/', 'Api/VideosController.getNewest')
@@ -22,6 +30,10 @@ Route.group(() => {
 
   }).prefix('/videos')
 
+  /**
+   * * Genre
+   */
+
   Route.group(() => {
 
     Route.post('/', 'Api/GenresController.getAll')
@@ -29,5 +41,15 @@ Route.group(() => {
     Route.post('/:slug', 'Api/GenresController.get')
 
   }).prefix('/genres')
+
+  /**
+   * * User
+   */
+
+  Route.group(() => {
+
+    Route.patch('/:id', 'Api/UsersController.update')
+
+  }).prefix('/user')
 
 }).prefix('/api')
