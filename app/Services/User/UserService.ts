@@ -1,9 +1,10 @@
 import authConfig from 'Config/auth'
 import User from 'App/Models/User/User'
+import Hash from '@ioc:Adonis/Core/Hash'
 import TokenService from '../TokenService'
 import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
-import UserValidator from 'App/Validators/UserValidator'
+import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
 import RegisterValidator from 'App/Validators/Api/Auth/RegisterValidator'
 import { TokenUserPayload } from 'Contracts/token'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
@@ -85,7 +86,7 @@ export default class UserService {
     }
   }
 
-  public static async update(id: User['id'], payload: UserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
+  public static async update(id: User['id'], payload: UpdateUserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
     let user: User
     const userPayload: Partial<ModelAttributes<User>> = {
       email: payload.email,
@@ -101,6 +102,11 @@ export default class UserService {
       user = await this.get(id, { trx })
     } catch (err: Error | any) {
       throw err
+    }
+
+    if (payload.oldPassword) {
+      if (!(await Hash.verify(user.password, payload.oldPassword)))
+        throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.OLD_PASSWORD_INCORRECT } as Error
     }
 
     if (payload.avatar) {

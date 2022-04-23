@@ -3,7 +3,7 @@ import BaseValidator from './BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UserValidator extends BaseValidator {
+export default class UpdateUserValidator extends BaseValidator {
   private readonly table: string = 'users'
   private readonly currentUserId: User['id'] | null = this.ctx.params.id ?? null
 
@@ -52,12 +52,19 @@ export default class UserValidator extends BaseValidator {
       rules.mobile(),
     ]),
     sex: schema.boolean.optional(),
+    oldPassword: schema.string.optional({ trim: true }, [
+      rules.containNumber(),
+      rules.containUppercase(),
+      rules.minLength(8),
+      rules.maxLength(30),
+    ]),
     password: schema.string.optional({ trim: true }, [
       rules.containNumber(),
       rules.containUppercase(),
       rules.minLength(8),
       rules.maxLength(30),
       rules.confirmed('passwordConfirm'),
+      rules.requiredIfExists('oldPassword'),
     ]),
   })
 

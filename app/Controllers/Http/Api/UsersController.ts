@@ -1,24 +1,24 @@
 import User from 'App/Models/User/User'
 import UserService from 'App/Services/User/UserService'
-import UserValidator from 'App/Validators/UserValidator'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
+import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
 import { Error } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UsersController {
   public async update({ request, params, response }: HttpContextContract) {
-    let payload: UserValidator['schema']['props']
+    let payload: UpdateUserValidator['schema']['props']
     const id: User['id'] = params.id
 
     try {
-      payload = await request.validate(UserValidator)
+      payload = await request.validate(UpdateUserValidator)
     } catch (err: any) {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        errors: err.messages,
+        errors: err.messages.errors,
       })
     }
 
