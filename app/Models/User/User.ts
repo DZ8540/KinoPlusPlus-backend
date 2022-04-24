@@ -1,5 +1,6 @@
 import Role from './Role'
 import Token from './Token'
+import Video from '../Video/Video'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Drive from '@ioc:Adonis/Core/Drive'
 import RoleService from 'App/Services/User/RoleService'
@@ -11,7 +12,8 @@ import {
   BaseModel, beforeCreate, beforeSave,
   BelongsTo, belongsTo, column,
   computed, HasMany, hasMany,
-  afterFetch, afterFind,
+  afterFetch, afterFind, manyToMany,
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
@@ -82,6 +84,9 @@ export default class User extends BaseModel {
 
   @hasMany(() => Token)
   public tokens: HasMany<typeof Token>
+
+  @manyToMany(() => Video, { pivotTable: 'wishlists' })
+  public wishlist: ManyToMany<typeof Video>
 
   /**
    * * Computed properties

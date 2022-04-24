@@ -3,8 +3,8 @@ import AuthService from 'App/Services/AuthService'
 import UserService from 'App/Services/User/UserService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
-import LoginValidator from 'App/Validators/Api/Auth/LoginValidator'
-import RegisterValidator from 'App/Validators/Api/Auth/RegisterValidator'
+import ApiLoginValidator from 'App/Validators/ApiLoginValidator'
+import RegisterValidator from 'App/Validators/RegisterValidator'
 import { Tokens } from 'Contracts/token'
 import { Error } from 'Contracts/services'
 import { AuthHeaders } from 'Contracts/auth'
@@ -48,7 +48,7 @@ export default class AuthController {
   }
 
   public async login({ request, response }: HttpContextContract) {
-    let payload: LoginValidator['schema']['props']
+    let payload: ApiLoginValidator['schema']['props']
     const headers: AuthHeaders = {
       fingerprint: request.header('User-Fingerprint')!,
       userAgent: request.header('User-Agent')!,
@@ -56,7 +56,7 @@ export default class AuthController {
     }
 
     try {
-      payload = await request.validate(LoginValidator)
+      payload = await request.validate(ApiLoginValidator)
     } catch (err: any) {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,

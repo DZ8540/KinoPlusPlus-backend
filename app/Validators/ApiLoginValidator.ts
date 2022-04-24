@@ -1,12 +1,8 @@
-import User from 'App/Models/User/User'
-import BaseValidator from './BaseValidator'
+import BaseValidator from 'App/Validators/BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UpdateUserValidator extends BaseValidator {
-  private readonly table: string = 'users'
-  private readonly currentUserId: User['id'] | null = this.ctx.params.id ?? null
-
+export default class ApiLoginValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -31,40 +27,13 @@ export default class UpdateUserValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    nickname: schema.string({ trim: true }, [
-      rules.unique({ table: this.table, column: 'nickname', whereNot: { id: this.currentUserId } }),
-      rules.maxLength(255),
-    ]),
-    email: schema.string({ trim: true }, [
-      rules.unique({ table: this.table, column: 'email', whereNot: { id: this.currentUserId } }),
+    email: schema.string({}, [
       rules.email(),
+      rules.exists({ table: 'users', column: 'email' }),
     ]),
-
-    /**
-     * * Optional schemes
-     */
-
-    avatar: schema.file.optional({
-      size: '2mb',
-      extnames: ['jpg', 'jpeg', 'png'],
-    }),
-    phone: schema.string.optional({ trim: true }, [
-      rules.mobile(),
-    ]),
-    sex: schema.boolean.optional(),
-    oldPassword: schema.string.optional({ trim: true }, [
-      rules.containNumber(),
-      rules.containUppercase(),
+    password: schema.string({}, [
       rules.minLength(8),
       rules.maxLength(30),
-    ]),
-    password: schema.string.optional({ trim: true }, [
-      rules.containNumber(),
-      rules.containUppercase(),
-      rules.minLength(8),
-      rules.maxLength(30),
-      rules.confirmed('passwordConfirm'),
-      rules.requiredIfExists('oldPassword'),
     ]),
   })
 

@@ -7,6 +7,11 @@ export default class ApiValidator extends BaseValidator {
     page: schema.number([
       rules.unsigned(),
     ]),
+
+    /**
+     * * Optional schemes
+     */
+
     limit: schema.number.optional([
       rules.unsigned(),
     ]),

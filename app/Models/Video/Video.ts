@@ -87,9 +87,7 @@ export default class Video extends BaseModel {
    * * Relations
    */
 
-  @manyToMany(() => Genre, {
-    pivotTable: 'genres_videos',
-  })
+  @manyToMany(() => Genre, { pivotTable: 'genres_videos' })
   public genres: ManyToMany<typeof Genre>
 
   /**

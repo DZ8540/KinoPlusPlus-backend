@@ -1,8 +1,12 @@
-import BaseValidator from 'App/Validators/BaseValidator'
+import BaseValidator from '../BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class LoginValidator extends BaseValidator {
+/**
+ * Use for wishlist, later list and history list
+ */
+
+export default class ListValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -27,14 +31,8 @@ export default class LoginValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    email: schema.string({}, [
-      rules.email(),
-      rules.exists({ table: 'users', column: 'email' }),
-    ]),
-    password: schema.string({}, [
-      rules.minLength(8),
-      rules.maxLength(30),
-    ]),
+    userId: schema.number([ rules.unsigned() ]),
+    videoId: schema.number([ rules.unsigned() ]),
   })
 
   /**

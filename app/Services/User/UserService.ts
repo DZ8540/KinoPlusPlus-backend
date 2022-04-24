@@ -3,9 +3,12 @@ import User from 'App/Models/User/User'
 import Hash from '@ioc:Adonis/Core/Hash'
 import TokenService from '../TokenService'
 import Drive from '@ioc:Adonis/Core/Drive'
+import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
-import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
-import RegisterValidator from 'App/Validators/Api/Auth/RegisterValidator'
+import ApiValidator from 'App/Validators/ApiValidator'
+import ListValidator from 'App/Validators/User/ListValidator'
+import RegisterValidator from 'App/Validators/RegisterValidator'
+import UpdateUserValidator from 'App/Validators/User/UpdateUserValidator'
 import { TokenUserPayload } from 'Contracts/token'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -146,6 +149,57 @@ export default class UserService {
 
     try {
       return await user.merge({ isEmailVerified: true }).save()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getUserWishlist(userId: User['id'], config: ApiValidator['schema']['props']): Promise<ModelPaginatorContract<Video>> {
+    let user: User
+
+    try {
+      user = await this.get(userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      return await user.related('wishlist').query().getViaPaginate(config)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async addToWishlist(payload: ListValidator['schema']['props']): Promise<void> {
+    let user: User
+
+    try {
+      user = await this.get(payload.userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      await user.related('wishlist').attach([payload.videoId])
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async removeFromWishlist(payload: ListValidator['schema']['props']): Promise<void> {
+    let user: User
+
+    try {
+      user = await this.get(payload.userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      await user.related('wishlist').detach([payload.videoId])
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

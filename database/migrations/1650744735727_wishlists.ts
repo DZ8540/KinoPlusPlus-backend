@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class GenresVideos extends BaseSchema {
-  protected tableName = 'genres_videos'
+export default class Wishlists extends BaseSchema {
+  protected tableName = 'wishlists'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -11,9 +11,9 @@ export default class GenresVideos extends BaseSchema {
        * * Foreign keys
        */
 
-      table.integer('genre_id').unsigned().notNullable().references('genres.id')
+      table.integer('user_id').unsigned().notNullable().references('users.id')
       table.integer('video_id').unsigned().notNullable().references('videos.id')
-      table.unique(['genre_id', 'video_id'])
+      table.unique(['user_id', 'video_id'])
 
       /**
        * * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

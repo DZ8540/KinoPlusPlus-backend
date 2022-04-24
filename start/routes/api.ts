@@ -48,7 +48,16 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.patch('/:id', 'Api/UsersController.update')
+    Route.group(() => {
+
+      Route.post('/', 'Api/User/WishlistsController.add')
+      Route.delete('/', 'Api/User/WishlistsController.delete')
+
+      Route.post('/:id', 'Api/User/WishlistsController.getUserWishlist')
+
+    }).prefix('/wishlist')
+
+    Route.patch('/:id', 'Api/User/UsersController.update')
 
   }).prefix('/user')
 
