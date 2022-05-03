@@ -90,11 +90,14 @@ export default class AuthController {
     }
 
     try {
-      const tokens: Tokens = await AuthService.refreshToken(refreshToken, headers)
+      const data: { tokens: Tokens, user: User } = await AuthService.refreshToken(refreshToken, headers)
 
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, tokens.refresh, COOKIE_REFRESH_TOKEN_OPTIONS)
+      response.cookie(COOKIE_REFRESH_TOKEN_KEY, data.tokens.refresh, COOKIE_REFRESH_TOKEN_OPTIONS)
 
-      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, tokens.access))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, {
+        user: data.user,
+        token: data.tokens.access,
+      }))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

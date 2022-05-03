@@ -23,10 +23,18 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.post('/newest/', 'Api/VideosController.getNewest')
-    Route.post('/popular/', 'Api/VideosController.getPopular')
-    Route.post('/search', 'Api/VideosController.search')
-    Route.post('/:slug', 'Api/VideosController.get')
+    Route.post('/newest/:currentUserId?', 'Api/VideosController.getNewest')
+    Route.post('/popular/:currentUserId?', 'Api/VideosController.getPopular')
+    Route.post('/search/:currentUserId?', 'Api/VideosController.search')
+
+    Route.group(() => {
+
+      Route.post('/', 'Api/User/WishlistsController.add')
+      Route.delete('/', 'Api/User/WishlistsController.delete')
+
+    }).prefix('/wishlist')
+
+    Route.post('/:slug/:currentUserId?', 'Api/VideosController.get')
 
   }).prefix('/videos')
 
@@ -48,15 +56,7 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.group(() => {
-
-      Route.post('/', 'Api/User/WishlistsController.add')
-      Route.delete('/', 'Api/User/WishlistsController.delete')
-
-      Route.post('/:id', 'Api/User/WishlistsController.getUserWishlist')
-
-    }).prefix('/wishlist')
-
+    Route.post('/wishlist/:id', 'Api/User/WishlistsController.getUserWishlist')
     Route.patch('/:id', 'Api/User/UsersController.update')
 
   }).prefix('/user')

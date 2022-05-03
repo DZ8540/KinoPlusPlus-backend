@@ -1,11 +1,10 @@
 import User from 'App/Models/User/User'
-import Video from 'App/Models/Video/Video'
 import ApiValidator from 'App/Validators/ApiValidator'
 import UserService from 'App/Services/User/UserService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import ListValidator from 'App/Validators/User/ListValidator'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
+import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -25,7 +24,7 @@ export default class WishlistsController {
     }
 
     try {
-      const wishlist: ModelPaginatorContract<Video> = await UserService.getUserWishlist(id, config)
+      const wishlist: JSONPaginate = await UserService.getUserWishlist(id, config)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, wishlist))
     } catch (err: Error | any) {

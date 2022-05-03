@@ -1,4 +1,6 @@
 import Genre from './Genre'
+import User from '../User/User'
+import Database from '@ioc:Adonis/Lucid/Database'
 import { DateTime } from 'luxon'
 import { camelCase } from 'Helpers/index'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
@@ -130,5 +132,19 @@ export default class Video extends BaseModel {
         }
       }
     })
+  }
+
+  public async getForUser(userId: User['id']) {
+    const video: ModelObject = { ...this.toJSON() }
+
+    const isWishlist = await Database
+      .from('wishlists')
+      .where('user_id', userId)
+      .andWhere('video_id', video.id)
+      .first()
+
+    video.wishlistStatus = Boolean(isWishlist)
+
+    return video
   }
 }

@@ -1,9 +1,11 @@
+import User from 'App/Models/User/User'
 import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
 import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
+import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
@@ -131,41 +133,49 @@ export default class VideoService {
     }
   }
 
-  public static async getNewest(payload: NewestPayload): Promise<ModelObject[]> {
+  public static async getNewest(payload: NewestPayload, currentUserId?: User['id']): Promise<ModelObject[]> {
     if (!payload.limit)
       payload.limit = 10
 
     try {
-      const pagination: ModelPaginatorContract<Video> = await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'released', orderBy: 'desc' })
+      const pagination: JSONPaginate = (await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'released', orderBy: 'desc' })).toJSON()
 
-      return pagination.toJSON().data
+      if (currentUserId)
+        pagination.data = await Promise.all(pagination.data.map(async (item: Video) => item.getForUser(currentUserId)))
+
+      return pagination.data
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async getPopular(payload: PopularPayload): Promise<ModelObject[]> {
+  public static async getPopular(payload: PopularPayload, currentUserId?: User['id']): Promise<ModelObject[]> {
     if (!payload.limit)
       payload.limit = 20
 
     try {
-      const pagination: ModelPaginatorContract<Video> = await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' })
+      const pagination: JSONPaginate = (await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' })).toJSON()
 
-      return pagination.toJSON().data
+      if (currentUserId)
+        pagination.data = await Promise.all(pagination.data.map(async (item: Video) => item.getForUser(currentUserId)))
+
+      return pagination.data
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async search(payload: SearchValidator['schema']['props']): Promise<ModelPaginatorContract<Video>> {
+  public static async search(payload: SearchValidator['schema']['props'], currentUserId?: User['id']): Promise<JSONPaginate> {
     let query = Video.query()
 
     if (!payload.limit)
       payload.limit = 20
 
     try {
+      let videos: JSONPaginate
+
       for (const key in payload) {
         switch (key) {
           case 'genres':
@@ -179,14 +189,20 @@ export default class VideoService {
 
               }
             }
-            break
 
+            break
           default:
+
             break
         }
       }
 
-      return await query.getViaPaginate(payload)
+      videos = (await query.getViaPaginate(payload)).toJSON()
+
+      if (currentUserId)
+        videos.data = await Promise.all(videos.data.map(async (item: Video) => item.getForUser(currentUserId)))
+
+      return videos
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

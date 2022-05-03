@@ -9,6 +9,7 @@ import ApiValidator from 'App/Validators/ApiValidator'
 import ListValidator from 'App/Validators/User/ListValidator'
 import RegisterValidator from 'App/Validators/RegisterValidator'
 import UpdateUserValidator from 'App/Validators/User/UpdateUserValidator'
+import { JSONPaginate } from 'Contracts/database'
 import { TokenUserPayload } from 'Contracts/token'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -155,7 +156,7 @@ export default class UserService {
     }
   }
 
-  public static async getUserWishlist(userId: User['id'], config: ApiValidator['schema']['props']): Promise<ModelPaginatorContract<Video>> {
+  public static async getUserWishlist(userId: User['id'], config: ApiValidator['schema']['props']): Promise<JSONPaginate> {
     let user: User
 
     try {
@@ -165,7 +166,11 @@ export default class UserService {
     }
 
     try {
-      return await user.related('wishlist').query().getViaPaginate(config)
+      const wishlist: JSONPaginate = (await user.related('wishlist').query().getViaPaginate(config)).toJSON()
+
+      wishlist.data = await Promise.all(wishlist.data.map(async (item: Video) => item.getForUser(userId)))
+
+      return wishlist
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

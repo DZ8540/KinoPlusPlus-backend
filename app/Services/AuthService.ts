@@ -99,7 +99,7 @@ export default class AuthService {
     }
   }
 
-  public static async refreshToken(token: string, headers: AuthHeaders): Promise<Tokens> {
+  public static async refreshToken(token: string, headers: AuthHeaders): Promise<{ tokens: Tokens, user: User }> {
     let user: User
     let tokenSession: Token
 
@@ -117,7 +117,7 @@ export default class AuthService {
 
       await tokenSession.merge({ token: tokens.refresh }).save()
 
-      return tokens
+      return { user, tokens }
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
