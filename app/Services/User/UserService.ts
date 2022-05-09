@@ -134,7 +134,7 @@ export default class UserService {
    * * For API
    */
 
-  public static async activate(token: string): Promise<User> {
+  public static async activate(token: string): Promise<void> {
     let payload: TokenUserPayload
     let user: User
 
@@ -149,7 +149,7 @@ export default class UserService {
       throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ACCOUNT_ALREADY_ACTIVATED } as Error
 
     try {
-      return await user.merge({ isEmailVerified: true }).save()
+      await user.merge({ isEmailVerified: true }).save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

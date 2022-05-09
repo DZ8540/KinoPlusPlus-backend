@@ -1,9 +1,13 @@
+import User from 'App/Models/User/User'
 import Genre from 'App/Models/Video/Genre'
 import Drive from '@ioc:Adonis/Core/Drive'
+import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
+import ApiValidator from 'App/Validators/ApiValidator'
 import GenreValidator from 'App/Validators/GenreValidator'
 import GenresOnMainPage, { GenreOnMainPage } from 'App/Models/Mongoose/GenresOnMainPage'
 import { GENRES_IMAGES } from 'Config/drive'
+import { JSONPaginate } from 'Contracts/database'
 import { ModelAttributes } from '@ioc:Adonis/Lucid/Orm'
 import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
@@ -211,6 +215,32 @@ export default class GenreService {
     }
 
     return genres
+  }
+
+  public static async getGenreMovies(config: ApiValidator['schema']['props'], slug: Genre['slug'], currentUserId?: User['id']): Promise<JSONPaginate> {
+    let genre: Genre
+
+    try {
+      genre = (await this.get(slug)).genre
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      const movies: JSONPaginate = (await genre
+        .related('videos')
+        .query()
+        .getViaPaginate(config))
+        .toJSON()
+
+      if (currentUserId)
+        movies.data = await Promise.all(movies.data.map((item: Video) => item.getForUser(currentUserId)))
+
+      return movies
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
   }
 
   /**

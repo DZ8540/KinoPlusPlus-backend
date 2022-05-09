@@ -1,9 +1,12 @@
+import User from 'App/Models/User/User'
 import Genre from 'App/Models/Video/Genre'
 import GenreService from 'App/Services/GenreService'
+import ApiValidator from 'App/Validators/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import { Error } from 'Contracts/services'
-import { ResponseMessages } from 'Config/response'
+import { JSONPaginate } from 'Contracts/database'
+import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class GenresController {
@@ -34,6 +37,30 @@ export default class GenresController {
       const item: Genre = (await GenreService.get(slug)).genre
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async genreMovies({ request, params, response }: HttpContextContract) {
+    let config: ApiValidator['schema']['props']
+    const slug: Genre['slug'] = params.slug
+    const currentUserId: User['id'] | undefined = params.currentUserId
+
+    try {
+      config = await request.validate(ApiValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        msg: ResponseMessages.VALIDATION_ERROR,
+        errors: err.messages,
+      })
+    }
+
+    try {
+      const movies: JSONPaginate = await GenreService.getGenreMovies(config, slug, currentUserId)
+
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, movies))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

@@ -46,6 +46,9 @@ Route.group(() => {
 
     Route.post('/', 'Api/GenresController.getAll')
     Route.post('/showOnMainPage', 'Api/GenresController.showOnMainPage')
+
+    Route.post('/movies/:slug/:currentUserId?', 'Api/GenresController.genreMovies')
+
     Route.post('/:slug', 'Api/GenresController.get')
 
   }).prefix('/genres')

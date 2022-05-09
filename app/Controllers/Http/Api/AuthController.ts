@@ -39,9 +39,9 @@ export default class AuthController {
     const token: string = params.token
 
     try {
-      const user: User = await UserService.activate(token)
+      await UserService.activate(token)
 
-      return response.status(200).send(new ResponseService(ResponseMessages.USER_ACTIVATED, user))
+      return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
@@ -61,7 +61,7 @@ export default class AuthController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        errors: err.messages,
+        errors: err.messages.errors,
       })
     }
 
