@@ -1,8 +1,10 @@
 import User from 'App/Models/User/User'
 import Video from 'App/Models/Video/Video'
+import UserService from 'App/Services/User/UserService'
 import VideoService from 'App/Services/Video/VideoService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
+import ListValidator from 'App/Validators/User/ListValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
 import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
@@ -44,8 +46,15 @@ export default class VideosController {
       let item: Video | ModelObject = await VideoService.getBySlug(slug, { relations: ['genres'] })
 
       item = await VideoService.incrementViewsCount(item as Video)
-      if (currentUserId)
+      if (currentUserId) {
+        const historyListPayload: ListValidator['schema']['props'] = {
+          userId: currentUserId,
+          videoId: item.id,
+        }
+
+        await UserService.addToHistoryList(historyListPayload)
         item = await item.getForUser(currentUserId)
+      }
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
     } catch (err: Error | any) {

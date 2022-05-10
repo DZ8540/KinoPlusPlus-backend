@@ -91,6 +91,9 @@ export default class User extends BaseModel {
   @manyToMany(() => Video, { pivotTable: 'laterLists' })
   public laterList: ManyToMany<typeof Video>
 
+  @manyToMany(() => Video, { pivotTable: 'historyLists' })
+  public historyList: ManyToMany<typeof Video>
+
   /**
    * * Computed properties
    */

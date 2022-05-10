@@ -216,7 +216,7 @@ export default class UserService {
   }
 
   /**
-   * * LaterList
+   * * Later list
    */
 
   public static async getUserLaterList(userId: User['id'], config: ApiValidator['schema']['props']): Promise<JSONPaginate> {
@@ -268,6 +268,54 @@ export default class UserService {
 
     try {
       await user.related('laterList').detach([payload.videoId])
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  /**
+   * * History list
+   */
+
+  public static async getUserHistoryList(userId: User['id'], config: ApiValidator['schema']['props']): Promise<JSONPaginate> {
+    let user: User
+
+    try {
+      user = await this.get(userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      const historyList: JSONPaginate = (await user.related('historyList').query().getViaPaginate(config)).toJSON()
+
+      historyList.data = await Promise.all(historyList.data.map(async (item: Video) => item.getForUser(userId)))
+
+      return historyList
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async addToHistoryList(payload: ListValidator['schema']['props'], safety: boolean = true): Promise<void> {
+    let user: User
+
+    try {
+      user = await this.get(payload.userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      if (safety) {
+        const isAlreadyInHistory: Video | null = await user.related('historyList').query().where('video_id', payload.videoId).first()
+
+        if (isAlreadyInHistory) return
+      }
+
+      await user.related('historyList').attach([payload.videoId])
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
