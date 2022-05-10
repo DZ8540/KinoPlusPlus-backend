@@ -1,10 +1,9 @@
 import BaseValidator from 'App/Validators/BaseValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { getUserEmailRules, getUserNicknameRules, getUserPasswordRules } from './Rules/userRules'
 
 export default class RegisterValidator extends BaseValidator {
-  private readonly table: string = 'users'
-
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -29,20 +28,9 @@ export default class RegisterValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    nickname: schema.string({}, [
-      rules.unique({ table: this.table, column: 'nickname' }),
-      rules.minLength(3),
-      rules.maxLength(20),
-    ]),
-    email: schema.string({}, [
-      rules.email(),
-      rules.unique({ table: this.table, column: 'email' }),
-    ]),
-    password: schema.string({}, [
-      rules.minLength(8),
-      rules.maxLength(30),
-      rules.confirmed('passwordConfirm'),
-    ]),
+    nickname: schema.string({ trim: true }, getUserNicknameRules()),
+    email: schema.string({ trim: true }, getUserEmailRules(undefined, 'unique')),
+    password: schema.string({ trim: true }, getUserPasswordRules(true)),
   })
 
   /**

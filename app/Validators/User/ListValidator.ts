@@ -1,5 +1,7 @@
 import BaseValidator from '../BaseValidator'
-import { rules, schema } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
+import { getUserIdRules } from '../Rules/userRules'
+import { getVideoIdRules } from '../Rules/videoRules'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 /**
@@ -31,8 +33,8 @@ export default class ListValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    userId: schema.number([ rules.unsigned() ]),
-    videoId: schema.number([ rules.unsigned() ]),
+    userId: schema.number(getUserIdRules()),
+    videoId: schema.number(getVideoIdRules()),
   })
 
   /**

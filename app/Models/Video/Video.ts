@@ -142,8 +142,14 @@ export default class Video extends BaseModel {
       .where('user_id', userId)
       .andWhere('video_id', video.id)
       .first()
+    const isLaterList = await Database
+      .from('laterLists')
+      .where('user_id', userId)
+      .andWhere('video_id', video.id)
+      .first()
 
     video.wishlistStatus = Boolean(isWishlist)
+    video.laterListStatus = Boolean(isLaterList)
 
     return video
   }

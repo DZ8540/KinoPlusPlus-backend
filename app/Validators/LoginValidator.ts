@@ -1,6 +1,7 @@
 import BaseValidator from './BaseValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { getUserEmailRules, getUserPasswordRules } from './Rules/userRules'
 
 export default class LoginValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
@@ -27,15 +28,8 @@ export default class LoginValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    email: schema.string({}, [
-      rules.email(),
-    ]),
-    password: schema.string({}, [
-      rules.containNumber(),
-      rules.containUppercase(),
-      rules.minLength(8),
-      rules.maxLength(30),
-    ]),
+    email: schema.string({ trim: true }, getUserEmailRules()),
+    password: schema.string({ trim: true }, getUserPasswordRules()),
   })
 
   /**

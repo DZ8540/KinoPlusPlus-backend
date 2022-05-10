@@ -1,9 +1,16 @@
+import Video from 'App/Models/Video/Video'
 import BaseValidator from '../BaseValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
+import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import {
+  getVideoDescriptionRules, getVideoImageRules, getVideoNameRules,
+  getVideoPosterRules, getVideoRatingRules, getVideoReleasedRules,
+  getVideoSlugRules,
+} from '../Rules/videoRules'
 
 export default class VideoValidator extends BaseValidator {
-  private readonly currentVideoId: number | null = this.ctx.params.id ?? null
+  private readonly currentVideoId?: Video['id'] = this.ctx.params.id
 
   constructor(protected ctx: HttpContextContract) {
     super()
@@ -29,48 +36,21 @@ export default class VideoValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    slug: schema.string.optional({}, [
-      rules.maxLength(50),
-      rules.minLength(4),
-      rules.unique({ table: 'videos', column: 'slug', whereNot: { id: this.currentVideoId } }),
-    ]),
-    name: schema.string({}, [
-      rules.maxLength(20),
-      rules.minLength(2),
-      rules.required(),
-    ]),
-    description: schema.string({}, [
-      rules.maxLength(8192),
-      rules.minLength(2),
-      rules.required(),
-    ]),
-    released: schema.date({ format: 'dd.MM.yyyy' }, [
-      rules.required(),
-      rules.before('today'),
-    ]),
-    country: schema.string({}, [
-      rules.required(),
-    ]),
-    rating: schema.number([
-      rules.range(0, 10),
-      rules.unsigned(),
-    ]),
-    poster: schema.string.optional({}, [
-      rules.url(),
-      rules.maxLength(255),
-    ]),
-    firstImage: schema.string.optional({}, [
-      rules.url(),
-      rules.maxLength(255),
-    ]),
-    secondImage: schema.string.optional({}, [
-      rules.url(),
-      rules.maxLength(255),
-    ]),
-    thirdImage: schema.string.optional({}, [
-      rules.url(),
-      rules.maxLength(255),
-    ]),
+    name: schema.string({ trim: true }, getVideoNameRules()),
+    description: schema.string({ trim: true }, getVideoDescriptionRules()),
+    released: schema.date({ format: DEFAULT_DATETIME_FORMAT }, getVideoReleasedRules()),
+    country: schema.string({ trim: true }),
+    rating: schema.number(getVideoRatingRules()),
+
+    /**
+     * * Optional schemes
+     */
+
+    slug: schema.string.optional({ trim: true }, getVideoSlugRules(this.currentVideoId)),
+    poster: schema.string.optional({ trim: true }, getVideoPosterRules()),
+    firstImage: schema.string.optional({ trim: true }, getVideoImageRules()),
+    secondImage: schema.string.optional({ trim: true }, getVideoImageRules()),
+    thirdImage: schema.string.optional({ trim: true }, getVideoImageRules()),
   })
 
   /**

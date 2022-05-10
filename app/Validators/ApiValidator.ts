@@ -1,20 +1,17 @@
 import BaseValidator from './BaseValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { getApiLimitRules, getApiPageRules } from './Rules/apiRules'
 
 export default class ApiValidator extends BaseValidator {
   protected preParsedSchema = {
-    page: schema.number([
-      rules.unsigned(),
-    ]),
+    page: schema.number(getApiPageRules()),
 
     /**
      * * Optional schemes
      */
 
-    limit: schema.number.optional([
-      rules.unsigned(),
-    ]),
+    limit: schema.number.optional(getApiLimitRules()),
   }
 
   constructor(protected ctx: HttpContextContract) {

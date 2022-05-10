@@ -2,10 +2,13 @@ import User from 'App/Models/User/User'
 import BaseValidator from '../BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import {
+  getUserAvatarOptions, getUserEmailRules, getUserNicknameRules,
+  getUserPasswordRules, getUserPhoneRules,
+} from '../Rules/userRules'
 
 export default class UpdateUserValidator extends BaseValidator {
-  private readonly table: string = 'users'
-  private readonly currentUserId: User['id'] | null = this.ctx.params.id ?? null
+  private readonly currentUserId?: User['id'] = this.ctx.params.id
 
   constructor(protected ctx: HttpContextContract) {
     super()
@@ -31,39 +34,19 @@ export default class UpdateUserValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    nickname: schema.string({ trim: true }, [
-      rules.unique({ table: this.table, column: 'nickname', whereNot: { id: this.currentUserId } }),
-      rules.maxLength(255),
-    ]),
-    email: schema.string({ trim: true }, [
-      rules.unique({ table: this.table, column: 'email', whereNot: { id: this.currentUserId } }),
-      rules.email(),
-    ]),
+    nickname: schema.string({ trim: true }, getUserNicknameRules(this.currentUserId)),
+    email: schema.string({ trim: true }, getUserEmailRules(this.currentUserId, 'unique')),
 
     /**
      * * Optional schemes
      */
 
-    avatar: schema.file.optional({
-      size: '2mb',
-      extnames: ['jpg', 'jpeg', 'png'],
-    }),
-    phone: schema.string.optional({ trim: true }, [
-      rules.mobile(),
-    ]),
+    avatar: schema.file.optional(getUserAvatarOptions()),
+    phone: schema.string.optional({ trim: true }, getUserPhoneRules()),
     sex: schema.boolean.optional(),
-    oldPassword: schema.string.optional({ trim: true }, [
-      rules.containNumber(),
-      rules.containUppercase(),
-      rules.minLength(8),
-      rules.maxLength(30),
-    ]),
+    oldPassword: schema.string.optional({ trim: true }, getUserPasswordRules()),
     password: schema.string.optional({ trim: true }, [
-      rules.containNumber(),
-      rules.containUppercase(),
-      rules.minLength(8),
-      rules.maxLength(30),
-      rules.confirmed('passwordConfirm'),
+      ...getUserPasswordRules(true),
       rules.requiredIfExists('oldPassword'),
     ]),
   })

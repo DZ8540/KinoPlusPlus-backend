@@ -156,6 +156,10 @@ export default class UserService {
     }
   }
 
+  /**
+   * * Wishlist
+   */
+
   public static async getUserWishlist(userId: User['id'], config: ApiValidator['schema']['props']): Promise<JSONPaginate> {
     let user: User
 
@@ -205,6 +209,65 @@ export default class UserService {
 
     try {
       await user.related('wishlist').detach([payload.videoId])
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  /**
+   * * LaterList
+   */
+
+  public static async getUserLaterList(userId: User['id'], config: ApiValidator['schema']['props']): Promise<JSONPaginate> {
+    let user: User
+
+    try {
+      user = await this.get(userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      const laterList: JSONPaginate = (await user.related('laterList').query().getViaPaginate(config)).toJSON()
+
+      laterList.data = await Promise.all(laterList.data.map(async (item: Video) => item.getForUser(userId)))
+
+      return laterList
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async addToLaterList(payload: ListValidator['schema']['props']): Promise<void> {
+    let user: User
+
+    try {
+      user = await this.get(payload.userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      await user.related('laterList').attach([payload.videoId])
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async removeFromLaterList(payload: ListValidator['schema']['props']): Promise<void> {
+    let user: User
+
+    try {
+      user = await this.get(payload.userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      await user.related('laterList').detach([payload.videoId])
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

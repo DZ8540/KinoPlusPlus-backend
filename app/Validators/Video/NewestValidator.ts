@@ -1,5 +1,6 @@
 import BaseValidator from 'App/Validators/BaseValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
+import { getApiLimitRules } from '../Rules/apiRules'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class NewestValidator extends BaseValidator {
@@ -27,9 +28,7 @@ export default class NewestValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    limit: schema.number.optional([
-      rules.unsigned()
-    ]),
+    limit: schema.number.optional(getApiLimitRules()),
   })
 
   /**

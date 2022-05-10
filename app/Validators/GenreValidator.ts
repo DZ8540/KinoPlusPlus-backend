@@ -1,11 +1,14 @@
+import Genre from 'App/Models/Video/Genre'
 import BaseValidator from './BaseValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import { GENRES_DESCRIPTION_LENGTH } from 'Config/database'
+import { schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import {
+  getGenreDescriptionRules, getGenreImageOptions,
+  getGenreNameRules, getGenreSlugRules
+} from './Rules/genreRules'
 
 export default class GenreValidator extends BaseValidator {
-  private currentSlug: string | null = this.ctx.params.id ?? null
-  private readonly table: string = 'genres'
+  private currentSlug?: Genre['slug'] = this.ctx.params.id
 
   constructor(protected ctx: HttpContextContract) {
     super()
@@ -31,23 +34,15 @@ export default class GenreValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    slug: schema.string.optional({}, [
-      rules.minLength(2),
-      rules.maxLength(255),
-      rules.unique({ table: this.table, column: 'slug', whereNot: { slug: this.currentSlug } }),
-    ]),
-    name: schema.string({}, [
-      rules.minLength(2),
-      rules.maxLength(255),
-      rules.unique({ table: this.table, column: 'name', whereNot: { slug: this.currentSlug } }),
-    ]),
-    description: schema.string({}, [
-      rules.minLength(2),
-      rules.maxLength(GENRES_DESCRIPTION_LENGTH),
-    ]),
-    image: schema.file.optional({
-      extnames: ['png', 'jpeg', 'jpg', 'webp'],
-    }),
+    name: schema.string({ trim: true }, getGenreNameRules(this.currentSlug)),
+    description: schema.string({ trim: true }, getGenreDescriptionRules()),
+
+    /**
+     * * Optional schemes
+     */
+
+    slug: schema.string.optional({ trim: true }, getGenreSlugRules(this.currentSlug)),
+    image: schema.file.optional(getGenreImageOptions()),
     isShowOnMainPage: schema.boolean.optional(),
   })
 

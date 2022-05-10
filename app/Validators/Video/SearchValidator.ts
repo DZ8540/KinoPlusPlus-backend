@@ -1,5 +1,6 @@
 import ApiValidator from '../ApiValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
+import { getGenreIdRules } from '../Rules/genreRules'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class SearchValidator extends ApiValidator {
@@ -28,10 +29,7 @@ export default class SearchValidator extends ApiValidator {
    */
   public schema = schema.create({
     ...this.preParsedSchema,
-    genres: schema.array.optional().members(schema.number([
-      rules.unsigned(),
-      rules.exists({ table: 'genres', column: 'id' }),
-    ])),
+    genres: schema.array.optional().members(schema.number(getGenreIdRules())),
   })
 
   /**

@@ -34,6 +34,13 @@ Route.group(() => {
 
     }).prefix('/wishlist')
 
+    Route.group(() => {
+
+      Route.post('/', 'Api/User/LaterListsController.add')
+      Route.delete('/', 'Api/User/LaterListsController.delete')
+
+    }).prefix('/laterList')
+
     Route.post('/:slug/:currentUserId?', 'Api/VideosController.get')
 
   }).prefix('/videos')
@@ -60,6 +67,7 @@ Route.group(() => {
   Route.group(() => {
 
     Route.post('/wishlist/:id', 'Api/User/WishlistsController.getUserWishlist')
+    Route.post('/laterList/:id', 'Api/User/LaterListsController.getUserLaterList')
     Route.patch('/:id', 'Api/User/UsersController.update')
 
   }).prefix('/user')
