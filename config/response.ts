@@ -36,6 +36,8 @@ export enum ResponseMessages {
   VIDEO_DELETED = 'Video has been deleted!',
   VIDEO_NOT_FOUND = 'Video is not found!',
 
+  VIDEO_COMMENT_NOT_FOUND = 'Video is not found!',
+
   /**
    * * Genre
    */

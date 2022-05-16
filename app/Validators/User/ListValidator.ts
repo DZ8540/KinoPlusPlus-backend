@@ -1,7 +1,7 @@
 import BaseValidator from '../BaseValidator'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { getUserIdRules } from '../Rules/userRules'
-import { getVideoIdRules } from '../Rules/videoRules'
+import { getVideoIdRules } from '../Rules/Video/videoRules'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 /**

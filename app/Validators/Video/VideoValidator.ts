@@ -7,7 +7,7 @@ import {
   getVideoDescriptionRules, getVideoImageRules, getVideoNameRules,
   getVideoPosterRules, getVideoRatingRules, getVideoReleasedRules,
   getVideoSlugRules,
-} from '../Rules/videoRules'
+} from '../Rules/Video/videoRules'
 
 export default class VideoValidator extends BaseValidator {
   private readonly currentVideoId?: Video['id'] = this.ctx.params.id

@@ -23,9 +23,9 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.post('/newest/:currentUserId?', 'Api/VideosController.getNewest')
-    Route.post('/popular/:currentUserId?', 'Api/VideosController.getPopular')
-    Route.post('/search/:currentUserId?', 'Api/VideosController.search')
+    Route.post('/newest/:currentUserId?', 'Api/Video/VideosController.getNewest')
+    Route.post('/popular/:currentUserId?', 'Api/Video/VideosController.getPopular')
+    Route.post('/search/:currentUserId?', 'Api/Video/VideosController.search')
 
     Route.group(() => {
 
@@ -41,7 +41,17 @@ Route.group(() => {
 
     }).prefix('/laterList')
 
-    Route.post('/:slug/:currentUserId?', 'Api/VideosController.get')
+    Route.group(() => {
+
+      Route.post('/:videoId', 'Api/Video/VideosCommentsController.paginate')
+
+      Route.post('/', 'Api/Video/VideosCommentsController.create')
+      Route.patch('/:id', 'Api/Video/VideosCommentsController.update')
+      Route.delete('/:id', 'Api/Video/VideosCommentsController.delete')
+
+    }).prefix('/comments')
+
+    Route.post('/:slug/:currentUserId?', 'Api/Video/VideosController.get')
 
   }).prefix('/videos')
 

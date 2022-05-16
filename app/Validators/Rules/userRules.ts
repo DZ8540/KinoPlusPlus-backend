@@ -4,8 +4,15 @@ import { FileValidationOptions } from '@ioc:Adonis/Core/BodyParser'
 
 const TABLE: string = 'users'
 
-export function getUserIdRules(): Rule[] {
-  return [ rules.unsigned() ]
+export function getUserIdRules(uniqueOrExists: boolean | 'unique' | 'exists' = false, table: string = TABLE): Rule[] {
+  const idRules: Rule[] = [ rules.unsigned() ]
+
+  if (uniqueOrExists == 'unique')
+    idRules.push(rules.unique({ table, column: 'id' }))
+  else if (uniqueOrExists == 'exists')
+    idRules.push(rules.exists({ table, column: 'id' }))
+
+  return idRules
 }
 
 export function getUserNicknameRules(currentId?: User['id'] | null, table: string = TABLE): Rule[] {

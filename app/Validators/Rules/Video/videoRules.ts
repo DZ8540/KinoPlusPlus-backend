@@ -2,11 +2,20 @@ import Video from 'App/Models/Video/Video'
 import { Rule, rules } from '@ioc:Adonis/Core/Validator'
 import { VIDEOS_DESCRIPTION_LENGTH } from 'Config/database'
 
-export function getVideoIdRules(): Rule[] {
-  return [ rules.unsigned() ]
+const TABLE: string = 'videos'
+
+export function getVideoIdRules(uniqueOrExists: boolean | 'unique' | 'exists' = false, table: string = TABLE): Rule[] {
+  const idRules: Rule[] = [ rules.unsigned() ]
+
+  if (uniqueOrExists == 'unique')
+    idRules.push(rules.unique({ table, column: 'id' }))
+  else if (uniqueOrExists == 'exists')
+    idRules.push(rules.exists({ table, column: 'id' }))
+
+  return idRules
 }
 
-export function getVideoSlugRules(currentId?: Video['id'] | null, table: string = 'videos'): Rule[] {
+export function getVideoSlugRules(currentId?: Video['id'] | null, table: string = TABLE): Rule[] {
   currentId = currentId ?? null
 
   return [

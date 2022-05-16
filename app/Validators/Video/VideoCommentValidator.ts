@@ -1,20 +1,11 @@
-import BaseValidator from './BaseValidator'
+import BaseValidator from '../BaseValidator'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import { getUserIdRules } from '../Rules/userRules'
+import { getVideoIdRules } from '../Rules/Video/videoRules'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { getApiLimitRules, getApiPageRules } from './Rules/apiRules'
+import { getVideoCommentDescriptionRules } from '../Rules/Video/videoCommentRules'
 
-export default class ApiValidator extends BaseValidator {
-  protected preParsedSchema = {
-    page: schema.number(getApiPageRules()),
-
-    /**
-     * * Optional schemes
-     */
-
-    limit: schema.number.optional(getApiLimitRules()),
-    orderBy: schema.enum.optional(['asc', 'desc'] as const),
-  }
-
+export default class VideoCommentValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -38,7 +29,11 @@ export default class ApiValidator extends BaseValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create(this.preParsedSchema)
+  public schema = schema.create({
+    userId: schema.number(getUserIdRules('exists')),
+    videoId: schema.number(getVideoIdRules('exists')),
+    description: schema.string({ trim: true }, getVideoCommentDescriptionRules())
+  })
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
