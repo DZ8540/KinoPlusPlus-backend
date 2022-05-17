@@ -6,3 +6,7 @@ export function camelCase(val: string): string {
 
   return string.camelCase(val)
 }
+
+export function getToken(header: string): string {
+  return header.split(' ')[1]
+}

@@ -32,22 +32,22 @@ Route.group(() => {
       Route.post('/', 'Api/User/WishlistsController.add')
       Route.delete('/', 'Api/User/WishlistsController.delete')
 
-    }).prefix('/wishlist')
+    }).prefix('/wishlist').middleware('CheckAccessToken')
 
     Route.group(() => {
 
       Route.post('/', 'Api/User/LaterListsController.add')
       Route.delete('/', 'Api/User/LaterListsController.delete')
 
-    }).prefix('/laterList')
+    }).prefix('/laterList').middleware('CheckAccessToken')
 
     Route.group(() => {
 
       Route.post('/:videoId', 'Api/Video/VideosCommentsController.paginate')
 
-      Route.post('/', 'Api/Video/VideosCommentsController.create')
-      Route.patch('/:id', 'Api/Video/VideosCommentsController.update')
-      Route.delete('/:id', 'Api/Video/VideosCommentsController.delete')
+      Route.post('/', 'Api/Video/VideosCommentsController.create').middleware('CheckAccessToken')
+      Route.patch('/:id', 'Api/Video/VideosCommentsController.update').middleware('CheckAccessToken')
+      Route.delete('/:id', 'Api/Video/VideosCommentsController.delete').middleware('CheckAccessToken')
 
     }).prefix('/comments')
 
@@ -81,6 +81,6 @@ Route.group(() => {
     Route.post('/historyList/:id', 'Api/User/HistoryListsController.getUserHistoryList')
     Route.patch('/:id', 'Api/User/UsersController.update')
 
-  }).prefix('/user')
+  }).prefix('/user').middleware('CheckAccessToken')
 
 }).prefix('/api')

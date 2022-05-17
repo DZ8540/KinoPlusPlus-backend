@@ -15,5 +15,5 @@ import { ResponseCodes } from 'Config/response'
 */
 export default class TokenException extends BaseException {
   code: ResponseCodes = ResponseCodes.TOKEN_EXPIRED
-  status: number = 400
+  status: number = 401
 }
