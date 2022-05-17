@@ -192,6 +192,7 @@ export default class UserService {
 
     try {
       await user.related('wishlist').attach([payload.videoId])
+      await this.addToHistoryList(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
@@ -251,6 +252,7 @@ export default class UserService {
 
     try {
       await user.related('laterList').attach([payload.videoId])
+      await this.addToHistoryList(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
