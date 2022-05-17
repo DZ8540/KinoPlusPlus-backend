@@ -90,6 +90,10 @@ export default class UserService {
     }
   }
 
+  /**
+   * * For API
+   */
+
   public static async update(id: User['id'], payload: UpdateUserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
     let user: User
     const userPayload: Partial<ModelAttributes<User>> = {
@@ -123,16 +127,18 @@ export default class UserService {
     }
 
     try {
-      return await user.merge(userPayload).save()
+      await user.merge(userPayload).save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
     }
-  }
 
-  /**
-   * * For API
-   */
+    try {
+      return await this.get(id)
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
 
   public static async activate(token: string): Promise<void> {
     let payload: TokenUserPayload
