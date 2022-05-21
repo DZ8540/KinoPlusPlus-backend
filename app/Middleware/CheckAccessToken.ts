@@ -22,7 +22,7 @@ export default class CheckRefreshToken {
 
       await next()
     } catch (err: Error | any) {
-      throw new ExceptionService(err)
+      throw new ExceptionService(ERROR)
     }
   }
 }
