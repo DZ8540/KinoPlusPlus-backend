@@ -104,9 +104,9 @@ export default class AuthService {
     let tokenSession: Token
 
     try {
-      const tokenData: TokenUserPayload = TokenService.verifyToken<TokenUserPayload>(token, authConfig.refresh.key)
+      const { id }: TokenUserPayload = TokenService.verifyToken<TokenUserPayload>(token, authConfig.refresh.key)
 
-      user = await UserService.get(tokenData.id)
+      user = await UserService.get(id)
       tokenSession = await TokenService.getTokenSession(token, user, headers)
     } catch (err: Error | any) {
       throw err

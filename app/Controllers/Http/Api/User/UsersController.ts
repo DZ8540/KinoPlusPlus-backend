@@ -18,7 +18,7 @@ export default class UsersController {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
-        errors: err.messages.errors,
+        errors: err.messages,
       })
     }
 

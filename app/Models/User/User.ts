@@ -2,7 +2,6 @@ import Role from './Role'
 import Token from './Token'
 import Video from '../Video/Video'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Drive from '@ioc:Adonis/Core/Drive'
 import RoleService from 'App/Services/User/RoleService'
 import { DateTime } from 'luxon'
 import { Error } from 'Contracts/services'
@@ -12,8 +11,7 @@ import {
   BaseModel, beforeCreate, beforeSave,
   BelongsTo, belongsTo, column,
   computed, HasMany, hasMany,
-  afterFetch, afterFind, manyToMany,
-  ManyToMany,
+  manyToMany, ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
@@ -150,19 +148,5 @@ export default class User extends BaseModel {
         throw err
       }
     }
-  }
-
-  @afterFind()
-  public static async getImageFromDrive(item: User) {
-    if (item.avatar)
-      item.avatar = await Drive.getUrl(item.avatar)
-  }
-
-  @afterFetch()
-  public static async getImagesFromDrive(users: User[]) {
-    await Promise.all(users.map(async (item: User) => {
-      if (item.avatar)
-        item.avatar = await Drive.getUrl(item.avatar)
-    }))
   }
 }

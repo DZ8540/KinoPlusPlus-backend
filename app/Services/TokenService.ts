@@ -19,14 +19,14 @@ export default class TokenService {
     }
 
     if (!tokenSession)
-      throw { code: ResponseCodes.TOKEN_EXPIRED, msg: ResponseMessages.TOKEN_ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Error
 
     if (headers) {
       if (
         tokenSession.ip != headers.ip ||
         tokenSession.userAgent != headers.userAgent ||
         tokenSession.fingerprint != headers.fingerprint
-      ) throw { code: ResponseCodes.TOKEN_EXPIRED, msg: ResponseMessages.TOKEN_ERROR } as Error
+      ) throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Error
     }
 
     return tokenSession
@@ -49,7 +49,7 @@ export default class TokenService {
       return verify(token, key) as D
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.TOKEN_EXPIRED, msg: ResponseMessages.TOKEN_ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Error
     }
   }
 }
