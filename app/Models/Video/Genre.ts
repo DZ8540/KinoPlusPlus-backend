@@ -34,8 +34,9 @@ export default class Genre extends BaseModel {
   @column()
   public image?: string
 
-  @column() // For aggregate movies count
-  public moviesCount?: number
+  /**
+   * * Timestamps
+   */
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -46,6 +47,13 @@ export default class Genre extends BaseModel {
     serializeAs: null,
   })
   public updatedAt: DateTime
+
+  /**
+   * * Aggregates
+   */
+
+  @column()
+  public moviesCount?: number
 
   /**
    * * Relations

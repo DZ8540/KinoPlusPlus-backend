@@ -4,6 +4,10 @@ import { BaseModel, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
 export default class Role extends BaseModel {
   public static readonly columns = ['id', 'name', 'createdAt', 'updatedAt'] as const
 
+  /**
+   * * Columns
+   */
+
   @column({ isPrimary: true })
   public id: number
 

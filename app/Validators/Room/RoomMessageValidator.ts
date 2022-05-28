@@ -1,19 +1,10 @@
-import BaseValidator from './BaseValidator'
+import BaseValidator from '../BaseValidator'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import { getApiLimitRules, getApiPageRules } from './Rules/apiRules'
+import { getUserIdRules } from '../Rules/userRules'
+import { getMessageRules } from '../Rules/messageRules'
+import { getVideoIdRules } from '../Rules/Video/videoRules'
 
-export default class ApiValidator extends BaseValidator {
-  protected preParsedSchema = {
-    page: schema.number(getApiPageRules()),
-
-    /**
-     * * Optional schemes
-     */
-
-    limit: schema.number.optional(getApiLimitRules()),
-    orderBy: schema.enum.optional(['asc', 'desc'] as const),
-  }
-
+export default class RoomMessageValidator extends BaseValidator {
   constructor() {
     super()
   }
@@ -37,7 +28,11 @@ export default class ApiValidator extends BaseValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create(this.preParsedSchema)
+  public schema = schema.create({
+    message: schema.string({ trim: true }, getMessageRules()),
+    userId: schema.number(getUserIdRules('exists')),
+    roomId: schema.number(getVideoIdRules('exists')),
+  })
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`

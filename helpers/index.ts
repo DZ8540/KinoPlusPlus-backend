@@ -10,3 +10,10 @@ export function camelCase(val: string): string {
 export function getToken(header: string): string {
   return header.split(' ')[1]
 }
+
+export function isObjectNotEmpty(obj: object | undefined | null): boolean {
+  if (obj == null || obj == undefined)
+    return false
+
+  return Boolean(Object.keys(obj).length)
+}

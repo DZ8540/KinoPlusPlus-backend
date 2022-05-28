@@ -23,6 +23,7 @@ export default class Videos extends BaseSchema {
       table.time('duration').notNullable()
       table.integer('viewsCount').unsigned().defaultTo(0).notNullable()
       table.boolean('isSerial').defaultTo(0).notNullable()
+      table.string('iframePath').notNullable()
 
       /**
        * * Nullable columns

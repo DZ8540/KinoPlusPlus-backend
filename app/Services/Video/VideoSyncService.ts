@@ -7,11 +7,11 @@ import HttpClientService from '../HttpClientService'
 import GenreValidator from 'App/Validators/GenreValidator'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import { AxiosResponse } from 'axios'
-import { camelCase } from 'Helpers/index'
 import { DateTime, Duration } from 'luxon'
 import { Error } from 'Contracts/services'
 import { parseAgeLimit } from 'Helpers/video'
 import { ModelAttributes } from '@ioc:Adonis/Lucid/Orm'
+import { camelCase, isObjectNotEmpty } from 'Helpers/index'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 const DEFAULT_GENRE_DESCRIPTION: string = 'Description coming soon'
@@ -65,7 +65,7 @@ export default class VideoSyncService {
 
       try {
         let dateTimeDuration: Duration
-        let videoData: any = (await HttpClientService.mainDataApiInstance().get(`/${item['imdb_id']}`)).data
+        let videoData: any = (await HttpClientService.mainDataApiInstance().get(`/${item['imdb_id']}/Trailer,Images`)).data
 
         // * For fucking 'PT3H' string in runtimeMins, fucking imdb api suka blyat
         // * Video The Wolf of Wall Street (4)
@@ -76,6 +76,8 @@ export default class VideoSyncService {
         }
 
         videoPayload.name = item['orig_title']
+        videoPayload.iframePath = item['iframe_src']
+
         videoPayload.description = videoData.plotLocal ?? 'None description'
         videoPayload.ageLimit = parseAgeLimit(videoData.contentRating)
         videoPayload.rating = +videoData.imDbRating
@@ -83,6 +85,17 @@ export default class VideoSyncService {
         videoPayload.duration = DateTime.fromISO(dateTimeDuration.toISOTime())
         videoPayload.country = videoData.countries?.toLowerCase()
         videoPayload.poster = videoData.image
+
+        if (isObjectNotEmpty(videoData.trailer))
+          videoPayload.trailer = videoData.linkEmbed
+
+        if (isObjectNotEmpty(videoData.images) && videoData.images.items.length) {
+          const videoPayloadImagesKeys: (keyof ModelAttributes<Video>)[] = ['firstImage', 'secondImage', 'thirdImage']
+
+          for (let i = 0; i < videoPayloadImagesKeys.length; i++) {
+            videoPayload[videoPayloadImagesKeys[i]!] = videoData.images.items[i].image
+          }
+        }
 
         genres = videoData.genres
       } catch (err: any) {

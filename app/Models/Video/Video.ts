@@ -16,8 +16,8 @@ export default class Video extends BaseModel {
     'description', 'released', 'country',
     'rating', 'viewsCount', 'isSerial',
     'firstImage', 'secondImage', 'thirdImage',
-    'trailer', 'poster', 'createdAt',
-    'updatedAt',
+    'trailer', 'poster', 'iframePath',
+    'createdAt', 'updatedAt',
   ] as const
 
   /**
@@ -58,19 +58,22 @@ export default class Video extends BaseModel {
   public isSerial: boolean
 
   @column()
-  public firstImage: string | undefined
+  public iframePath: string
 
   @column()
-  public secondImage: string | undefined
+  public firstImage?: string
 
   @column()
-  public thirdImage: string | undefined
+  public secondImage?: string
 
   @column()
-  public trailer: string | undefined
+  public thirdImage?: string
 
   @column()
-  public poster: string | undefined
+  public trailer?: string
+
+  @column()
+  public poster?: string
 
   @column.dateTime({
     autoCreate: true,
