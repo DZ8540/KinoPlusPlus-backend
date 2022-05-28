@@ -1,4 +1,4 @@
-import Room from 'App/models/Room/Room'
+import Room from 'App/Models/Room/Room'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ApiValidator from 'App/Validators/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'

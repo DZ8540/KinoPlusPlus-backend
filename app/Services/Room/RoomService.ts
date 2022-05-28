@@ -1,5 +1,5 @@
 import User from 'App/Models/User/User'
-import Room from 'App/models/Room/Room'
+import Room from 'App/Models/Room/Room'
 import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
 import UserService from '../User/UserService'

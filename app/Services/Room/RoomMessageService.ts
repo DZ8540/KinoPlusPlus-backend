@@ -1,4 +1,4 @@
-import Room from 'App/models/Room/Room'
+import Room from 'App/Models/Room/Room'
 import RoomService from './RoomService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import RoomMessage from 'App/Models/Room/RoomMessage'
