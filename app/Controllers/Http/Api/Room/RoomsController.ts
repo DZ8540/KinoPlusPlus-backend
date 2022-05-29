@@ -1,11 +1,8 @@
 import Room from 'App/Models/Room/Room'
-import Video from 'App/Models/Video/Video'
-import RoomMessage from 'App/Models/Room/RoomMessage'
 import ApiValidator from 'App/Validators/ApiValidator'
 import RoomService from 'App/Services/Room/RoomService'
 import ResponseService from 'App/Services/ResponseService'
 import RoomValidator from 'App/Validators/Room/RoomValidator'
-import RoomMessageService from 'App/Services/Room/RoomMessageService'
 import { Error } from 'Contracts/services'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
@@ -110,25 +107,9 @@ export default class RoomsController {
     } catch (err: Error | any) {}
   }
 
-  public static async join(slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void): Promise<{ messages: ModelPaginatorContract<RoomMessage>, video: Video } | void> {
-    let config: ApiValidator['schema']['props']
-
+  public static async join(slug: Room['slug'], cb: (result: Error | ResponseService) => void): Promise<Room | void> {
     try {
-      config = await validator.validate({
-        data: request,
-        schema: apiValidator.schema,
-        messages: apiValidator.messages,
-      })
-    } catch (err: any) {
-      return cb({
-        code: ResponseCodes.VALIDATION_ERROR,
-        msg: ResponseMessages.VALIDATION_ERROR,
-        errors: err.messages,
-      })
-    }
-
-    try {
-      return await RoomMessageService.paginate(slug, config)
+      return await RoomService.get(slug)
     } catch (err: Error | any) {
       return cb(err)
     }

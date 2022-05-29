@@ -1,12 +1,10 @@
 import Room from 'App/Models/Room/Room'
-import Video from 'App/Models/Video/Video'
 import WebSocket from 'App/Services/WebSocket'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ResponseService from 'App/Services/ResponseService'
 import RoomsController from 'App/Controllers/Http/Api/Room/RoomsController'
 import RoomsMessagesController from 'App/Controllers/Http/Api/Room/RoomsMessagesController'
 import { Error } from 'Contracts/services'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 WebSocket.boot()
@@ -38,12 +36,12 @@ WebSocket.io.on('connection', (socket) => {
       socket.emit('room:update', isOpen)
   })
 
-  socket.on('room:join', async (slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void) => {
-    const data: void | { messages: ModelPaginatorContract<RoomMessage>, video: Video } = await RoomsController.join(slug, request, cb)
+  socket.on('room:join', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
+    const room: void | Room = await RoomsController.join(slug, cb)
 
-    if (data) {
+    if (room) {
       socket.join(slug)
-      cb(new ResponseService(ResponseMessages.SUCCESS, data))
+      cb(new ResponseService(ResponseMessages.SUCCESS, room))
     }
   })
 
@@ -60,6 +58,8 @@ WebSocket.io.on('connection', (socket) => {
       })
     }
   })
+
+  socket.on('room:getMessages', RoomsMessagesController.paginate)
 
   socket.on('room:unJoin', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
     socket.leave(slug)
