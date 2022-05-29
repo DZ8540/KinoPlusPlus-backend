@@ -56,6 +56,9 @@ export default class Room extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
+  @belongsTo(() => Video)
+  public video: BelongsTo<typeof Video>
+
   @hasMany(() => RoomMessage)
   public messages: HasMany<typeof RoomMessage>
 
@@ -79,6 +82,8 @@ export default class Room extends BaseModel {
   @beforeFind()
   @beforeFetch()
   public static async preloadRelations(query: ModelQueryBuilderContract<typeof Room>) {
-    query.preload('user')
+    query
+      .preload('user')
+      .preload('video')
   }
 }

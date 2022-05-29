@@ -6,7 +6,6 @@ import RoomMessageService from 'App/Services/Room/RoomMessageService'
 import RoomMessageValidator from 'App/Validators/Room/RoomMessageValidator'
 import { Error } from 'Contracts/services'
 import { validator } from '@ioc:Adonis/Core/Validator'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 const apiValidator: ApiValidator = new ApiValidator()
@@ -31,7 +30,7 @@ export default class RoomsMessagesController {
     }
 
     try {
-      const messages: ModelPaginatorContract<RoomMessage> = await RoomMessageService.paginate(slug, config)
+      const messages = await RoomMessageService.paginate(slug, config)
 
       return cb(new ResponseService(ResponseMessages.SUCCESS, messages))
     } catch (err: Error | any) {
