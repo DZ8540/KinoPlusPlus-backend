@@ -83,4 +83,14 @@ Route.group(() => {
 
   }).prefix('/user').middleware('CheckAccessToken')
 
+  /**
+   * * Room
+   */
+
+  // Route.group(() => {
+
+  //   Route.post('/:videoName', 'Api/Room/RoomsController.search')
+
+  // }).prefix('/rooms').middleware('CheckAccessToken')
+
 }).prefix('/api')

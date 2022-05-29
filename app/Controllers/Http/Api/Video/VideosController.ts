@@ -53,6 +53,9 @@ export default class VideosController {
         }
 
         await UserService.addToHistoryList(historyListPayload)
+        await item.load('rooms', (query) => {
+          query.limit(3)
+        })
         item = await item.getForUser(currentUserId)
       }
 

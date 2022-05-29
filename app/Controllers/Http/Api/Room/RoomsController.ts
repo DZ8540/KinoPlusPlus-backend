@@ -1,4 +1,5 @@
 import Room from 'App/Models/Room/Room'
+import Video from 'App/Models/Video/Video'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ApiValidator from 'App/Validators/ApiValidator'
 import RoomService from 'App/Services/Room/RoomService'
@@ -9,11 +10,20 @@ import { Error } from 'Contracts/services'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
+// import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 const apiValidator: ApiValidator = new ApiValidator()
 const roomValidator: RoomValidator = new RoomValidator()
 
 export default class RoomsController {
+  // public async search({ request, response }: HttpContextContract) {
+
+  // }
+
+  /**
+   * * Socket
+   */
+
   public static async paginate(request: any, cb: (result: Error | ResponseService) => void) {
     let config: ApiValidator['schema']['props']
 
@@ -60,7 +70,7 @@ export default class RoomsController {
     try {
       const slug: Room['slug'] = await RoomService.create(payload)
 
-      cb(new ResponseService(ResponseMessages.SUCCESS))
+      cb(new ResponseService(ResponseMessages.SUCCESS, slug))
       return slug
     } catch (err: Error | any) {
       return cb(err)
@@ -100,7 +110,7 @@ export default class RoomsController {
     } catch (err: Error | any) {}
   }
 
-  public static async join(slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void): Promise<ModelPaginatorContract<RoomMessage> | void> {
+  public static async join(slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void): Promise<{ messages: ModelPaginatorContract<RoomMessage>, video: Video } | void> {
     let config: ApiValidator['schema']['props']
 
     try {
@@ -118,9 +128,7 @@ export default class RoomsController {
     }
 
     try {
-      const messages: ModelPaginatorContract<RoomMessage> = await RoomMessageService.paginate(slug, config)
-
-      return messages
+      return await RoomMessageService.paginate(slug, config)
     } catch (err: Error | any) {
       return cb(err)
     }

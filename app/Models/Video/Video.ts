@@ -1,13 +1,15 @@
 import Genre from './Genre'
 import User from '../User/User'
+import Room from '../Room/Room'
 import Database from '@ioc:Adonis/Lucid/Database'
 import { DateTime } from 'luxon'
 import { camelCase } from 'Helpers/index'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
   BaseModel, beforeCreate, beforeSave,
-  column, computed, ManyToMany,
-  manyToMany, ModelObject
+  column, computed, HasMany,
+  hasMany, ManyToMany, manyToMany,
+  ModelObject
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Video extends BaseModel {
@@ -91,6 +93,9 @@ export default class Video extends BaseModel {
   /**
    * * Relations
    */
+
+  @hasMany(() => Room)
+  public rooms: HasMany<typeof Room>
 
   @manyToMany(() => Genre, { pivotTable: 'genres_videos' })
   public genres: ManyToMany<typeof Genre>

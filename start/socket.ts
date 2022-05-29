@@ -1,4 +1,5 @@
 import Room from 'App/Models/Room/Room'
+import Video from 'App/Models/Video/Video'
 import WebSocket from 'App/Services/WebSocket'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ResponseService from 'App/Services/ResponseService'
@@ -38,11 +39,11 @@ WebSocket.io.on('connection', (socket) => {
   })
 
   socket.on('room:join', async (slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void) => {
-    const messages: void | ModelPaginatorContract<RoomMessage> = await RoomsController.join(slug, request, cb)
+    const data: void | { messages: ModelPaginatorContract<RoomMessage>, video: Video } = await RoomsController.join(slug, request, cb)
 
-    if (messages) {
+    if (data) {
       socket.join(slug)
-      cb(new ResponseService(ResponseMessages.SUCCESS, messages))
+      cb(new ResponseService(ResponseMessages.SUCCESS, data))
     }
   })
 

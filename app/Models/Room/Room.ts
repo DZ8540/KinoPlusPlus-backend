@@ -3,8 +3,10 @@ import Video from '../Video/Video'
 import RoomMessage from './RoomMessage'
 import { DateTime } from 'luxon'
 import {
-  BaseModel, beforeDelete, column,
-  HasMany, hasMany, scope,
+  BaseModel, beforeDelete, beforeFetch,
+  beforeFind, belongsTo, BelongsTo,
+  column, HasMany, hasMany,
+  ModelQueryBuilderContract, scope,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Room extends BaseModel {
@@ -51,6 +53,9 @@ export default class Room extends BaseModel {
    * * Relations
    */
 
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
+
   @hasMany(() => RoomMessage)
   public messages: HasMany<typeof RoomMessage>
 
@@ -69,5 +74,11 @@ export default class Room extends BaseModel {
   @beforeDelete()
   public static async deleteAllMessages(item: Room) {
     await item.related('messages').query().delete()
+  }
+
+  @beforeFind()
+  @beforeFetch()
+  public static async preloadRelations(query: ModelQueryBuilderContract<typeof Room>) {
+    query.preload('user')
   }
 }
