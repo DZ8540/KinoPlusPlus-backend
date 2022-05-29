@@ -1,4 +1,5 @@
 import User from 'App/Models/User/User'
+import Room from 'App/Models/Room/Room'
 import Video from 'App/Models/Video/Video'
 import UserService from 'App/Services/User/UserService'
 import VideoService from 'App/Services/Video/VideoService'
@@ -10,9 +11,9 @@ import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
 import { Error } from 'Contracts/services'
 import { JSONPaginate } from 'Contracts/database'
-import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { ModelObject, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class VideosController {
   public async search({ request, params, response }: HttpContextContract) {
@@ -53,8 +54,10 @@ export default class VideosController {
         }
 
         await UserService.addToHistoryList(historyListPayload)
-        await item.load('rooms', (query) => {
-          query.limit(3)
+        await item.load('rooms', (query: ModelQueryBuilderContract<typeof Room>) => {
+          query
+            .withScopes((scopes) => scopes.opened())
+            .limit(3)
         })
         item = await item.getForUser(currentUserId)
       }
