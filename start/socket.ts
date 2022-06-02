@@ -32,8 +32,10 @@ WebSocket.io.on('connection', (socket) => {
     }
 
     const isOpen: void | Room['isOpen'] = await RoomsController.update(slug, payload, cb)
-    if (isOpen)
-      socket.emit('room:update', isOpen)
+    if (
+      isOpen != null ||
+      isOpen != undefined
+    ) socket.emit('room:update', isOpen)
   })
 
   socket.on('room:join', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
