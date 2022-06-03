@@ -52,7 +52,7 @@ WebSocket.io.on('connection', (socket) => {
       const msg: RoomMessage | void = await RoomsMessagesController.sendMessage(request, cb)
 
       if (msg)
-        socket.broadcast.to(slug).emit('room:newMessage', msg)
+        socket.to(slug).emit('room:newMessage', msg)
     } else {
       cb({
         code: ResponseCodes.CLIENT_ERROR,
