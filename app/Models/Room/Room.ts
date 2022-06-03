@@ -2,11 +2,12 @@ import User from '../User/User'
 import Video from '../Video/Video'
 import RoomMessage from './RoomMessage'
 import { DateTime } from 'luxon'
+import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
   BaseModel, beforeDelete, beforeFetch,
   beforeFind, belongsTo, BelongsTo,
-  column, HasMany, hasMany,
-  ModelQueryBuilderContract, scope,
+  column, computed, HasMany,
+  ModelQueryBuilderContract, scope, hasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Room extends BaseModel {
@@ -61,6 +62,15 @@ export default class Room extends BaseModel {
 
   @hasMany(() => RoomMessage)
   public messages: HasMany<typeof RoomMessage>
+
+  /**
+   * * Computed properties
+   */
+
+  @computed()
+  public get createdAtForUser(): string {
+    return this.createdAt?.toFormat(DEFAULT_DATETIME_FORMAT)
+  }
 
   /**
    * * Query scopes

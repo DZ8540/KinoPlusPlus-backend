@@ -1,8 +1,8 @@
 import BaseValidator from '../BaseValidator'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { getUserIdRules } from '../Rules/userRules'
-import { getMessageRules } from '../Rules/messageRules'
-import { getVideoIdRules } from '../Rules/Video/videoRules'
+import { getRoomIdRules } from '../Rules/Room/roomRules'
+import { getMessageRules } from '../Rules/Room/messageRules'
 
 export default class RoomMessageValidator extends BaseValidator {
   constructor() {
@@ -31,7 +31,7 @@ export default class RoomMessageValidator extends BaseValidator {
   public schema = schema.create({
     message: schema.string({ trim: true }, getMessageRules()),
     userId: schema.number(getUserIdRules('exists')),
-    roomId: schema.number(getVideoIdRules('exists')),
+    roomId: schema.number(getRoomIdRules('exists')),
   })
 
   /**

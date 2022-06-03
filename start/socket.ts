@@ -71,10 +71,7 @@ WebSocket.io.on('connection', (socket) => {
       socket.data.rooms = socket.data.rooms!.filter((item: Room['slug']) => item != slug)
     }
 
-    cb({
-      code: ResponseCodes.CLIENT_ERROR,
-      msg: ResponseMessages.ERROR,
-    })
+    cb(new ResponseService(ResponseMessages.SUCCESS))
   })
 
   socket.on('disconnect', async () => {
