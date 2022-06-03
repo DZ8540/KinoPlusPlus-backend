@@ -1,6 +1,6 @@
 import { Rule, rules } from '@ioc:Adonis/Core/Validator'
 
-export function getRoomIdRules(uniqueOrExists: boolean | 'unique' | 'exists' = false, table: string = 'roomsMessages'): Rule[] {
+export function getRoomIdRules(uniqueOrExists: boolean | 'unique' | 'exists' = false, table: string = 'rooms'): Rule[] {
   const idRules: Rule[] = [ rules.unsigned() ]
 
   if (uniqueOrExists == 'unique')
