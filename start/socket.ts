@@ -70,7 +70,7 @@ WebSocket.io.on('connection', (socket) => {
       await RoomsController.delete(slug)
       socket.data.rooms = socket.data.rooms!.filter((item: Room['slug']) => item != slug)
 
-      socket.emit('room:delete')
+      socket.to(slug).emit('room:delete')
     }
 
     cb(new ResponseService(ResponseMessages.SUCCESS))
@@ -79,6 +79,8 @@ WebSocket.io.on('connection', (socket) => {
   socket.on('disconnect', async () => {
     for (const item of socket.data.rooms!) {
       await RoomsController.delete(item)
+
+      socket.to(item).emit('room:delete')
     }
   })
 
