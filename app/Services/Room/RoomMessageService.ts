@@ -43,11 +43,41 @@ export default class RoomMessageService {
   }
 
   public static async create(payload: RoomMessageValidator['schema']['props']): Promise<RoomMessage> {
+    let id: RoomMessage['id']
+
     try {
-      return await RoomMessage.create(payload)
+      const item: RoomMessage = await RoomMessage.create(payload)
+
+      id = item.id
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
     }
+
+    try {
+      return await this.get(id)
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
+
+  /**
+   * * Private methods
+   */
+
+  private static async get(id: RoomMessage['id']): Promise<RoomMessage> {
+    let item: RoomMessage | null
+
+    try {
+      item = await RoomMessage.find(id)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+    }
+
+    if (!item)
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Error
+
+    return item
   }
 }

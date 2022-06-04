@@ -69,6 +69,8 @@ WebSocket.io.on('connection', (socket) => {
     if (socket.data.rooms!.includes(slug)) {
       await RoomsController.delete(slug)
       socket.data.rooms = socket.data.rooms!.filter((item: Room['slug']) => item != slug)
+
+      socket.emit('room:delete')
     }
 
     cb(new ResponseService(ResponseMessages.SUCCESS))

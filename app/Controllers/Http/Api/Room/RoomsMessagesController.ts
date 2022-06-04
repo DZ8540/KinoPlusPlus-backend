@@ -58,7 +58,7 @@ export default class RoomsMessagesController {
     try {
       const message = await RoomMessageService.create(payload)
 
-      cb(new ResponseService(ResponseMessages.SUCCESS))
+      cb(new ResponseService(ResponseMessages.SUCCESS, message))
       return message
     } catch (err: Error | any) {
       return cb(err)
