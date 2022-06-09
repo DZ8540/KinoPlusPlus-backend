@@ -94,7 +94,7 @@ export default class RoomsController {
     try {
       const isOpen: Room['isOpen'] = await RoomService.update(slug, payload)
 
-      cb(new ResponseService(ResponseMessages.SUCCESS))
+      cb(new ResponseService(ResponseMessages.SUCCESS, isOpen))
       return isOpen
     } catch (err: Error | any) {
       return cb(err)
