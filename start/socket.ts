@@ -46,7 +46,7 @@ WebSocket.io.on('connection', (socket) => {
       cb(new ResponseService(ResponseMessages.SUCCESS, room))
 
       const users: number = (await socket.in(slug).fetchSockets()).length
-      socket.emit('room:usersCountUpdate', users)
+      socket.to(slug).emit('room:usersCountUpdate', users)
     }
   })
 
@@ -76,7 +76,7 @@ WebSocket.io.on('connection', (socket) => {
       socket.to(slug).emit('room:delete')
     } else {
       const users: number = (await socket.in(slug).fetchSockets()).length
-      socket.emit('room:usersCountUpdate', users)
+      socket.to(slug).emit('room:usersCountUpdate', users)
     }
 
     cb(new ResponseService(ResponseMessages.SUCCESS))
