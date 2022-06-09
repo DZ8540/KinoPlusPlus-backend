@@ -17,7 +17,10 @@ WebSocket.boot()
 WebSocket.io.on('connection', (socket) => {
   socket.data.rooms = []
 
-  async function getUsersCountInRoom(slug: Room['slug']): Promise<number> {
+  async function getUsersCountInRoom(slug: Room['slug'], action: 'join' | 'unJoin'): Promise<number> {
+    if (action == 'join')
+      return (await socket.in(slug).fetchSockets()).length + 1
+
     return (await socket.in(slug).fetchSockets()).length
   }
 
@@ -53,7 +56,7 @@ WebSocket.io.on('connection', (socket) => {
     if (room) {
       await socket.join(slug)
 
-      const usersCount: number = await getUsersCountInRoom(slug)
+      const usersCount: number = await getUsersCountInRoom(slug, 'join')
 
       cb(new ResponseService(ResponseMessages.SUCCESS, { usersCount, room } as ReturnJoinRoomEventPayload))
       socket.to(slug).emit('room:usersCountUpdate', usersCount)
@@ -85,7 +88,7 @@ WebSocket.io.on('connection', (socket) => {
 
       socket.to(slug).emit('room:delete')
     } else {
-      const usersCount: number = await getUsersCountInRoom(slug)
+      const usersCount: number = await getUsersCountInRoom(slug, 'unJoin')
       socket.to(slug).emit('room:usersCountUpdate', usersCount)
     }
 
