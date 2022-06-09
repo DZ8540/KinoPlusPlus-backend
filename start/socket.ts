@@ -7,10 +7,19 @@ import RoomsMessagesController from 'App/Controllers/Http/Api/Room/RoomsMessages
 import { Error } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
+type ReturnJoinRoomEvent = {
+  usersCount: number,
+  room: Room,
+}
+
 WebSocket.boot()
 
 WebSocket.io.on('connection', (socket) => {
   socket.data.rooms = []
+
+  async function getUsersCountInRoom(slug: Room['slug']): Promise<number> {
+    return (await socket.in(slug).fetchSockets()).length + 1
+  }
 
   socket.on('room:paginate', RoomsController.paginate)
 
@@ -43,10 +52,11 @@ WebSocket.io.on('connection', (socket) => {
 
     if (room) {
       socket.join(slug)
-      cb(new ResponseService(ResponseMessages.SUCCESS, room))
 
-      const users: number = (await socket.in(slug).fetchSockets()).length
-      socket.to(slug).emit('room:usersCountUpdate', users)
+      const usersCount: number = await getUsersCountInRoom(slug)
+
+      cb(new ResponseService(ResponseMessages.SUCCESS, { usersCount, room } as ReturnJoinRoomEvent))
+      socket.to(slug).emit('room:usersCountUpdate', usersCount)
     }
   })
 
@@ -75,8 +85,8 @@ WebSocket.io.on('connection', (socket) => {
 
       socket.to(slug).emit('room:delete')
     } else {
-      const users: number = (await socket.in(slug).fetchSockets()).length
-      socket.to(slug).emit('room:usersCountUpdate', users)
+      const usersCount: number = await getUsersCountInRoom(slug)
+      socket.to(slug).emit('room:usersCountUpdate', usersCount)
     }
 
     cb(new ResponseService(ResponseMessages.SUCCESS))
