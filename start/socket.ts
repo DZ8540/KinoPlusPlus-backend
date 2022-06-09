@@ -35,7 +35,7 @@ WebSocket.io.on('connection', (socket) => {
     if (
       isOpen != null ||
       isOpen != undefined
-    ) socket.emit('room:update', isOpen)
+    ) socket.to(slug).emit('room:update', isOpen)
   })
 
   socket.on('room:join', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
@@ -44,6 +44,9 @@ WebSocket.io.on('connection', (socket) => {
     if (room) {
       socket.join(slug)
       cb(new ResponseService(ResponseMessages.SUCCESS, room))
+
+      const users: number = (await socket.in(slug).fetchSockets()).length
+      socket.emit('room:usersCountUpdate', users)
     }
   })
 
@@ -71,6 +74,9 @@ WebSocket.io.on('connection', (socket) => {
       socket.data.rooms = socket.data.rooms!.filter((item: Room['slug']) => item != slug)
 
       socket.to(slug).emit('room:delete')
+    } else {
+      const users: number = (await socket.in(slug).fetchSockets()).length
+      socket.emit('room:usersCountUpdate', users)
     }
 
     cb(new ResponseService(ResponseMessages.SUCCESS))

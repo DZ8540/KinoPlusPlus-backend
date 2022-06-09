@@ -155,7 +155,16 @@ export default class VideoService {
       payload.limit = 20
 
     try {
-      const pagination: JSONPaginate = (await this.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' })).toJSON()
+      const pagination: JSONPaginate = (await this
+        .paginate(
+          {
+            page: 1,
+            limit: payload.limit,
+            orderByColumn: 'viewsCount',
+            orderBy: 'desc'
+          }
+        ))
+        .toJSON()
 
       if (currentUserId)
         pagination.data = await Promise.all(pagination.data.map(async (item: Video) => item.getForUser(currentUserId)))

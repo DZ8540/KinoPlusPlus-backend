@@ -12,7 +12,11 @@ export default class TokenService {
     let tokenSession: Token | null
 
     try {
-      tokenSession = await user.related('tokens').query().where('token', token).first()
+      tokenSession = await user
+        .related('tokens')
+        .query()
+        .where('token', token)
+        .first()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error

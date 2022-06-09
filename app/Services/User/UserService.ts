@@ -296,7 +296,11 @@ export default class UserService {
     }
 
     try {
-      const historyList: JSONPaginate = (await user.related('historyList').query().getViaPaginate(config)).toJSON()
+      const historyList: JSONPaginate = (await user
+        .related('historyList')
+        .query()
+        .getViaPaginate(config))
+        .toJSON()
 
       historyList.data = await Promise.all(historyList.data.map(async (item: Video) => item.getForUser(userId)))
 
