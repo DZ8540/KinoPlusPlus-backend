@@ -47,6 +47,12 @@ export default class VideosController {
       let item: Video | ModelObject = await VideoService.getBySlug(slug, { relations: ['genres'] })
 
       item = await VideoService.incrementViewsCount(item as Video)
+      await item.load('rooms', (query: ModelQueryBuilderContract<typeof Room>) => {
+        query
+          .withScopes((scopes) => scopes.opened())
+          .limit(3)
+      })
+
       if (currentUserId) {
         const historyListPayload: ListValidator['schema']['props'] = {
           userId: currentUserId,
@@ -54,11 +60,6 @@ export default class VideosController {
         }
 
         await UserService.addToHistoryList(historyListPayload)
-        await item.load('rooms', (query: ModelQueryBuilderContract<typeof Room>) => {
-          query
-            .withScopes((scopes) => scopes.opened())
-            .limit(3)
-        })
         item = await item.getForUser(currentUserId)
       }
 

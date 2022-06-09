@@ -8,6 +8,18 @@ import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UsersController {
+  public async get({ params, response }: HttpContextContract) {
+    const id: User['id'] = params.id
+
+    try {
+      const user: User = await UserService.get(id)
+
+      return response.status(200).send(new ResponseService(ResponseMessages.USER_UPDATED, user))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
   public async update({ request, params, response }: HttpContextContract) {
     let payload: UpdateUserValidator['schema']['props']
     const id: User['id'] = params.id

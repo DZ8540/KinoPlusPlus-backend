@@ -79,6 +79,8 @@ Route.group(() => {
     Route.post('/wishlist/:id', 'Api/User/WishlistsController.getUserWishlist')
     Route.post('/laterList/:id', 'Api/User/LaterListsController.getUserLaterList')
     Route.post('/historyList/:id', 'Api/User/HistoryListsController.getUserHistoryList')
+
+    Route.post('/:id', 'Api/User/UsersController.get')
     Route.patch('/:id', 'Api/User/UsersController.update')
 
   }).prefix('/user').middleware('CheckAccessToken')
