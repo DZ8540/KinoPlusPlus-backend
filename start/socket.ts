@@ -7,7 +7,7 @@ import RoomsMessagesController from 'App/Controllers/Http/Api/Room/RoomsMessages
 import { Error } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
-type ReturnJoinRoomEvent = {
+type ReturnJoinRoomEventPayload = {
   usersCount: number,
   room: Room,
 }
@@ -18,7 +18,7 @@ WebSocket.io.on('connection', (socket) => {
   socket.data.rooms = []
 
   async function getUsersCountInRoom(slug: Room['slug']): Promise<number> {
-    return (await socket.in(slug).fetchSockets()).length + 1
+    return (await socket.in(slug).fetchSockets()).length
   }
 
   socket.on('room:paginate', RoomsController.paginate)
@@ -28,7 +28,7 @@ WebSocket.io.on('connection', (socket) => {
 
     if (slug) {
       socket.data.rooms!.push(slug)
-      socket.join(slug)
+      await socket.join(slug)
     }
   })
 
@@ -51,11 +51,11 @@ WebSocket.io.on('connection', (socket) => {
     const room: void | Room = await RoomsController.join(slug, cb)
 
     if (room) {
-      socket.join(slug)
+      await socket.join(slug)
 
       const usersCount: number = await getUsersCountInRoom(slug)
 
-      cb(new ResponseService(ResponseMessages.SUCCESS, { usersCount, room } as ReturnJoinRoomEvent))
+      cb(new ResponseService(ResponseMessages.SUCCESS, { usersCount, room } as ReturnJoinRoomEventPayload))
       socket.to(slug).emit('room:usersCountUpdate', usersCount)
     }
   })
@@ -77,7 +77,7 @@ WebSocket.io.on('connection', (socket) => {
   socket.on('room:getMessages', RoomsMessagesController.paginate)
 
   socket.on('room:unJoin', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
-    socket.leave(slug)
+    await socket.leave(slug)
 
     if (socket.data.rooms!.includes(slug)) {
       await RoomsController.delete(slug)
