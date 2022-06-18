@@ -15,7 +15,7 @@ export type ServiceConfig<M extends LucidRow> = {
   relations?: ExtractModelRelations<M>[],
 }
 
-export type Error = {
+export type Err = {
   code: ResponseCodes,
   msg: ResponseMessages,
   body?: any,

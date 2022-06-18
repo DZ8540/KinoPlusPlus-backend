@@ -1,8 +1,9 @@
 import User from 'App/Models/User/User'
+import { TablesNames } from 'Config/database'
 import { Rule, rules } from '@ioc:Adonis/Core/Validator'
 import { FileValidationOptions } from '@ioc:Adonis/Core/BodyParser'
 
-const TABLE: string = 'users'
+const TABLE: string = TablesNames.USERS
 
 export function getUserIdRules(uniqueOrExists: boolean | 'unique' | 'exists' = false, table: string = TABLE): Rule[] {
   const idRules: Rule[] = [ rules.unsigned() ]

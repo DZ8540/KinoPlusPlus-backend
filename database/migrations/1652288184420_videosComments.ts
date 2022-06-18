@@ -1,8 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { VIDEO_COMMENTS_DESCRIPTION_LENGTH } from 'Config/database'
+import { TablesNames, VIDEO_COMMENTS_DESCRIPTION_LENGTH } from 'Config/database'
 
 export default class VideosComments extends BaseSchema {
-  protected tableName = 'videosComments'
+  protected tableName = TablesNames.VIDEOS_COMMENTS
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -18,8 +18,8 @@ export default class VideosComments extends BaseSchema {
        * * Foreign keys
        */
 
-      table.integer('user_id').unsigned().notNullable().references('users.id')
-      table.integer('video_id').unsigned().notNullable().references('videos.id')
+      table.integer('user_id').unsigned().notNullable().references(`${TablesNames.USERS}.id`)
+      table.integer('video_id').unsigned().notNullable().references(`${TablesNames.VIDEOS}.id`)
 
       /**
        * * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

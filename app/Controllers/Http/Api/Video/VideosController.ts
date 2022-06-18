@@ -9,7 +9,7 @@ import ListValidator from 'App/Validators/User/ListValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
 import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -34,7 +34,7 @@ export default class VideosController {
       const videos: JSONPaginate = await VideoService.search(payload, currentUserId)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, videos))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -64,7 +64,7 @@ export default class VideosController {
       }
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -80,14 +80,14 @@ export default class VideosController {
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
         errors: err.messages,
-      } as Error)
+      } as Err)
     }
 
     try {
       const data: ModelObject[] = await VideoService.getNewest(payload, currentUserId)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, data))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -103,14 +103,14 @@ export default class VideosController {
         code: ResponseCodes.VALIDATION_ERROR,
         msg: ResponseMessages.VALIDATION_ERROR,
         errors: err.messages,
-      } as Error)
+      } as Err)
     }
 
     try {
       const data: ModelObject[] = await VideoService.getPopular(payload, currentUserId)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, data))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

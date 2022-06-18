@@ -5,7 +5,7 @@ import TokenService from './TokenService'
 import Mail from '@ioc:Adonis/Addons/Mail'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Application from '@ioc:Adonis/Core/Application'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { SignTokenConfig, TokenUserPayload } from 'Contracts/token'
 
@@ -39,7 +39,7 @@ export default class MailerService {
       })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.MAILER_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.MAILER_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 }

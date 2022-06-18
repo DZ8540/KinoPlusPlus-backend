@@ -9,7 +9,7 @@ import GenresOnMainPage, { GenreOnMainPage } from 'App/Models/Mongoose/GenresOnM
 import { GENRES_IMAGES } from 'Config/drive'
 import { JSONPaginate } from 'Contracts/database'
 import { ModelAttributes } from '@ioc:Adonis/Lucid/Orm'
-import { Error, ServiceConfig } from 'Contracts/services'
+import { Err, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 type Columns = typeof Genre.columns[number][]
@@ -42,7 +42,7 @@ export default class GenreService {
       return await query
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -63,15 +63,15 @@ export default class GenreService {
       }
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     try {
       if (!item)
-        throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.GENRE_NOT_FOUND } as Error
+        throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.GENRE_NOT_FOUND } as Err
 
       return this.loadModelConfigurations(item, config)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
   }
@@ -91,7 +91,7 @@ export default class GenreService {
         genrePayload.image = `${GENRES_IMAGES}/${payload.image.fileName}`
       } catch (err: any) {
         Logger.error(err)
-        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Error
+        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Err
       }
     }
 
@@ -99,13 +99,13 @@ export default class GenreService {
       item = await Genre.create(genrePayload, { client: trx })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (payload.isShowOnMainPage) {
       try {
         await this.addGenreToShowOnMainPage(item.id)
-      } catch (err: Error | any) {
+      } catch (err: Err | any) {
         throw err
       }
     }
@@ -124,7 +124,7 @@ export default class GenreService {
 
     try {
       item = (await this.get(slug)).genre
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -137,7 +137,7 @@ export default class GenreService {
         genrePayload.image = `${GENRES_IMAGES}/${payload.image.fileName}`
       } catch (err: any) {
         Logger.error(err)
-        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Error
+        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Err
       }
     }
 
@@ -145,7 +145,7 @@ export default class GenreService {
       item = await item.merge(genrePayload).save()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     try {
@@ -153,7 +153,7 @@ export default class GenreService {
         await this.addGenreToShowOnMainPage(item.id)
       else
         await this.removeGenreFromShowOnMainPage(item.id)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -165,7 +165,7 @@ export default class GenreService {
 
     try {
       item = (await this.get(slug)).genre
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -174,13 +174,13 @@ export default class GenreService {
         await Drive.delete(item.image)
       } catch (err: any) {
         Logger.error(err)
-        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Error
+        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Err
       }
     }
 
     try {
       await this.removeGenreFromShowOnMainPage(item.id)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -188,7 +188,7 @@ export default class GenreService {
       await item.delete()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -211,7 +211,7 @@ export default class GenreService {
         const { genre } = await this.get(genreId)
 
         genres.push(genre)
-      } catch (err: Error | any) {}
+      } catch (err: Err | any) {}
     }
 
     return genres
@@ -222,7 +222,7 @@ export default class GenreService {
 
     try {
       genre = (await this.get(slug)).genre
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -239,7 +239,7 @@ export default class GenreService {
       return movies
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -252,7 +252,7 @@ export default class GenreService {
       return await GenresOnMainPage.find()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -263,7 +263,7 @@ export default class GenreService {
       item = await GenresOnMainPage.findOne({ genreId })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     try {
@@ -273,7 +273,7 @@ export default class GenreService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -284,14 +284,14 @@ export default class GenreService {
     try {
       await this.getFromMongo(genreId)
       return
-    } catch (err: Error | any) {}
+    } catch (err: Err | any) {}
     // * Check if exists
 
     try {
       await genre.save()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -300,7 +300,7 @@ export default class GenreService {
       await GenresOnMainPage.deleteOne({ genreId })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -315,7 +315,7 @@ export default class GenreService {
       }
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (config.withShowOnMainPage) {
@@ -323,7 +323,7 @@ export default class GenreService {
         await this.getFromMongo(item.id)
 
         showOnMainPage = true
-      } catch (err: Error | any) {}
+      } catch (err: Err | any) {}
     }
 
     return { genre: item, showOnMainPage } as GetMethodReturn

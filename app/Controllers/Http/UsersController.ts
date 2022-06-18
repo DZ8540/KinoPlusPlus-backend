@@ -1,5 +1,6 @@
 import User from 'App/Models/User/User'
 import UserService from 'App/Services/User/UserService'
+import { Err } from 'Contracts/services'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UsersController {
@@ -12,7 +13,7 @@ export default class UsersController {
       const users: User[] = await UserService.paginate({ baseURL, page }, columns)
 
       return view.render('pages/users/index', { users })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -25,7 +26,7 @@ export default class UsersController {
       const item: User = await UserService.get(id)
 
       return view.render('pages/users/show', { item })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }

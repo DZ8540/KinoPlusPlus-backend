@@ -3,6 +3,7 @@ import ApiValidator from 'App/Validators/ApiValidator'
 import UserService from 'App/Services/User/UserService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
+import { Err } from 'Contracts/services'
 import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -26,7 +27,7 @@ export default class HistoryListsController {
       const historyList: JSONPaginate = await UserService.getUserHistoryList(id, config)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, historyList))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

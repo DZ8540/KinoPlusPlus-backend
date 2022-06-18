@@ -1,7 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { TablesNames } from 'Config/database'
 
 export default class RoomsMessages extends BaseSchema {
-  protected tableName = 'roomsMessages'
+  protected tableName = TablesNames.ROOMS_MESSAGES
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -17,8 +18,8 @@ export default class RoomsMessages extends BaseSchema {
        * * Foreign keys
        */
 
-      table.integer('user_id').unsigned().references('users.id')
-      table.integer('room_id').unsigned().references('rooms.id')
+      table.integer('user_id').unsigned().notNullable().references(`${TablesNames.USERS}.id`)
+      table.integer('room_id').unsigned().notNullable().references(`${TablesNames.ROOMS}.id`)
 
       /**
        * * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

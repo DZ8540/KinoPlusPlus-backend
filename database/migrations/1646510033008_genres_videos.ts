@@ -1,7 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { TablesNames } from 'Config/database'
 
 export default class GenresVideos extends BaseSchema {
-  protected tableName = 'genres_videos'
+  protected tableName = TablesNames.GENRES_VIDEOS
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -11,8 +12,8 @@ export default class GenresVideos extends BaseSchema {
        * * Foreign keys
        */
 
-      table.integer('genre_id').unsigned().notNullable().references('genres.id')
-      table.integer('video_id').unsigned().notNullable().references('videos.id')
+      table.integer('genre_id').unsigned().notNullable().references(`${TablesNames.GENRES}.id`)
+      table.integer('video_id').unsigned().notNullable().references(`${TablesNames.VIDEOS}.id`)
       table.unique(['genre_id', 'video_id'])
 
       /**

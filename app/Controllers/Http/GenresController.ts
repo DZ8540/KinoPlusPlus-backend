@@ -1,6 +1,7 @@
 import Genre from 'App/Models/Video/Genre'
 import GenreService from 'App/Services/GenreService'
 import GenreValidator from 'App/Validators/GenreValidator'
+import { Err } from 'Contracts/services'
 import { ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -10,7 +11,7 @@ export default class GenresController {
       const genres: Genre[] = await GenreService.getAll()
 
       return view.render('pages/genres/index', { genres })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -28,7 +29,7 @@ export default class GenresController {
 
       session.flash('success', ResponseMessages.GENRE_CREATED)
       return response.redirect().toRoute('genres.index')
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -41,7 +42,7 @@ export default class GenresController {
       const genreData = await GenreService.get(slug, { withShowOnMainPage: true })
 
       return view.render('pages/genres/show', { item: genreData.genre, showOnMainPage: genreData.showOnMainPage })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -54,7 +55,7 @@ export default class GenresController {
       const genreData = await GenreService.get(slug, { withShowOnMainPage: true })
 
       return view.render('pages/genres/edit', { item: genreData.genre, showOnMainPage: genreData.showOnMainPage })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -69,7 +70,7 @@ export default class GenresController {
 
       session.flash('success', ResponseMessages.GENRE_UPDATED)
       return response.redirect().toRoute('genres.index')
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -82,7 +83,7 @@ export default class GenresController {
       await GenreService.delete(slug)
 
       session.flash('success', ResponseMessages.GENRE_DELETED)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
     }
 

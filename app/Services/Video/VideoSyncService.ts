@@ -7,8 +7,8 @@ import HttpClientService from '../HttpClientService'
 import GenreValidator from 'App/Validators/GenreValidator'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import { AxiosResponse } from 'axios'
+import { Err } from 'Contracts/services'
 import { DateTime, Duration } from 'luxon'
-import { Error } from 'Contracts/services'
 import { parseAgeLimit } from 'Helpers/video'
 import { ModelAttributes } from '@ioc:Adonis/Lucid/Orm'
 import { camelCase, isObjectNotEmpty } from 'Helpers/index'
@@ -36,12 +36,12 @@ export default class VideoSyncService {
         })
       } catch (err: any) {
         Logger.error(err)
-        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Error
+        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Err
       }
 
       try {
         this.addVideos(response.data.data)
-      } catch (err: Error | any) {
+      } catch (err: Err | any) {
         throw err
       }
 
@@ -100,12 +100,12 @@ export default class VideoSyncService {
         genres = videoData.genres
       } catch (err: any) {
         Logger.error(err)
-        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Error
+        throw { code: ResponseCodes.SERVER_ERROR, msg: ResponseMessages.ERROR } as Err
       }
 
       try {
         arrGenresIds = await this.addGenres(genres, trx)
-      } catch (err: Error | any) {
+      } catch (err: Err | any) {
         await trx.rollback()
 
         throw err
@@ -120,7 +120,7 @@ export default class VideoSyncService {
         await trx.rollback()
 
         Logger.error(err)
-        throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+        throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
       }
     }
   }
@@ -138,7 +138,7 @@ export default class VideoSyncService {
 
         try {
           genre = (await GenreService.get(itemSlug)).genre
-        } catch (err: Error | any) {
+        } catch (err: Err | any) {
           const payload: GenreValidator['schema']['props'] = {
             name: item,
             slug: itemSlug,
@@ -154,7 +154,7 @@ export default class VideoSyncService {
       }
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     return arrGenresIds

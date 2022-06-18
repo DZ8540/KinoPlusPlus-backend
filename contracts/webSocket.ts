@@ -1,10 +1,11 @@
 import Room from 'App/Models/Room/Room'
+import User from 'App/Models/User/User'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ApiValidator from 'App/Validators/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'
 import RoomValidator from 'App/Validators/Room/RoomValidator'
 import RoomMessageValidator from 'App/Validators/Room/RoomMessageValidator'
-import { Error } from './services'
+import { Err } from './services'
 
 export interface ServerToClientEvents {
   'room:delete': () => void,
@@ -14,17 +15,18 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  'room:unJoin': (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => void,
-  'room:paginate': (request: ApiValidator['schema']['props'], cb: (result: Error | ResponseService) => void) => void,
-  'room:create': (request: RoomValidator['schema']['props'] | any, cb: (result: Error | ResponseService) => void) => void,
-  'room:update': (slug: Room['slug'], request: RoomValidator['schema']['props'], cb: (result: Error | ResponseService) => void) => void,
-  'room:join': (slug: Room['slug'], request: ApiValidator['schema']['props'] | any, cb: (result: Error | ResponseService) => void) => void,
-  'room:getMessages': (slug: Room['slug'], request: ApiValidator['schema']['props'] | any, cb: (result: Error | ResponseService) => void) => void,
-  'room:sendMessage': (slug: Room['slug'], request: RoomMessageValidator['schema']['props'] | any, cb: (result: Error | ResponseService) => void) => void,
+  'room:unJoin': (slug: Room['slug'], cb: (result: Err | ResponseService) => void) => void,
+  'room:join': (roomSlug: Room['slug'], cb: (result: Err | ResponseService) => void) => void,
+  'room:create': (request: RoomValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
+  'room:update': (slug: Room['slug'], request: RoomValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
+  'room:getMessages': (slug: Room['slug'], request: ApiValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
+  'room:sendMessage': (slug: Room['slug'], request: RoomMessageValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
 }
 
 export interface InterServerEvents {}
 
 export interface SocketData {
-  rooms: Room['slug'][],
+  createdRoom: Room['slug'] | null,
+  room: Room['slug'] | null,
+  userId: User['id'],
 }

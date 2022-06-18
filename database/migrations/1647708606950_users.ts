@@ -1,7 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { TablesNames } from 'Config/database'
 
 export default class Users extends BaseSchema {
-  protected tableName = 'users'
+  protected tableName = TablesNames.USERS
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -33,7 +34,7 @@ export default class Users extends BaseSchema {
         .integer('role_id')
         .unsigned()
         .notNullable()
-        .references('roles.id')
+        .references(`${TablesNames.ROLES}.id`)
         .onDelete('CASCADE')
 
       /**

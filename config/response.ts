@@ -69,4 +69,10 @@ export enum ResponseMessages {
 
   ERROR = 'Something went wrong, please repeat!',
   VALIDATION_ERROR = 'Please fill all inputs correctly!',
+
+  /**
+   * * Socket
+   */
+
+  SOCKET_USER_ID_UNDEFINED = 'User id is undefined!'
 }

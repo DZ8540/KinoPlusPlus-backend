@@ -4,11 +4,11 @@ export default class ResponseService {
   public code: ResponseCodes = ResponseCodes.SUCCESS
   public status: number = 200
 
-  public msg: ResponseMessages
+  public message: ResponseMessages
   public body?: any
 
-  constructor(msg: ResponseMessages, body?: any) {
-    this.msg = msg
+  constructor(message: ResponseMessages, body?: any) {
+    this.message = message
     this.body = body
   }
 }

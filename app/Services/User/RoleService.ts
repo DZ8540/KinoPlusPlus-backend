@@ -1,6 +1,6 @@
 import Role from 'App/Models/User/Role'
 import Logger from '@ioc:Adonis/Core/Logger'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 export default class RoleService {
@@ -11,11 +11,11 @@ export default class RoleService {
       item = await Role.findBy('name', name)
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ROLE_NOT_FOUND } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ROLE_NOT_FOUND } as Err
 
     return item
   }

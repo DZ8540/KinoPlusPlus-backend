@@ -4,7 +4,7 @@ import GenreService from 'App/Services/GenreService'
 import ApiValidator from 'App/Validators/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -15,7 +15,7 @@ export default class GenresController {
       const genres: Genre[] = await GenreService.getAll([], { withMoviesCount: true })
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, genres))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -25,7 +25,7 @@ export default class GenresController {
       const genres: Genre[] = await GenreService.getAllGenresOnMainPage()
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, genres))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -37,7 +37,7 @@ export default class GenresController {
       const item: Genre = (await GenreService.get(slug)).genre
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -61,7 +61,7 @@ export default class GenresController {
       const movies: JSONPaginate = await GenreService.getGenreMovies(config, slug, currentUserId)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, movies))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

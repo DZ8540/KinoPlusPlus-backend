@@ -1,5 +1,5 @@
 import VideoSyncService from 'App/Services/Video/VideoSyncService'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -17,7 +17,7 @@ export default class MainsController {
       const videosCount: number = await VideoSyncService.sync()
 
       session.flash('success', `${ResponseMessages.SUCCESS_SYNC_VIDEOS} Amount - ${videosCount}`)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
     }
 

@@ -1,7 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { TablesNames } from 'Config/database'
 
 export default class HistoryLists extends BaseSchema {
-  protected tableName = 'historyLists'
+  protected tableName = TablesNames.HISTORY_LISTS
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -11,9 +12,8 @@ export default class HistoryLists extends BaseSchema {
        * * Foreign keys
        */
 
-      table.integer('user_id').unsigned().notNullable().references('users.id')
-      table.integer('video_id').unsigned().notNullable().references('videos.id')
-      table.unique(['user_id', 'video_id'])
+      table.integer('user_id').unsigned().notNullable().references(`${TablesNames.USERS}.id`)
+      table.integer('video_id').unsigned().notNullable().references(`${TablesNames.VIDEOS}.id`)
 
       /**
        * * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

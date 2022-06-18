@@ -1,8 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { VIDEOS_DESCRIPTION_LENGTH } from 'Config/database'
+import { TablesNames, VIDEOS_DESCRIPTION_LENGTH } from 'Config/database'
 
 export default class Videos extends BaseSchema {
-  protected tableName = 'videos'
+  protected tableName = TablesNames.VIDEOS
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {

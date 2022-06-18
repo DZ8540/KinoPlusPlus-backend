@@ -4,7 +4,7 @@ import ApiValidator from 'App/Validators/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'
 import RoomMessageService from 'App/Services/Room/RoomMessageService'
 import RoomMessageValidator from 'App/Validators/Room/RoomMessageValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
@@ -13,7 +13,7 @@ const apiValidator: ApiValidator = new ApiValidator()
 const roomMessageValidator: RoomMessageValidator = new RoomMessageValidator()
 
 export default class RoomsMessagesController {
-  public static async paginate(slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void) {
+  public static async paginate(slug: Room['slug'], request: any, cb: (result: Err | ResponseService) => void) {
     let config: ApiValidator['schema']['props']
 
     try {
@@ -34,12 +34,12 @@ export default class RoomsMessagesController {
       const messages: ModelPaginatorContract<RoomMessage> = await RoomMessageService.paginate(slug, config)
 
       return cb(new ResponseService(ResponseMessages.SUCCESS, messages))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       return cb(err)
     }
   }
 
-  public static async sendMessage(request: any, cb: (result: Error | ResponseService) => void): Promise<void | RoomMessage> {
+  public static async sendMessage(request: any, cb: (result: Err | ResponseService) => void): Promise<void | RoomMessage> {
     let payload: RoomMessageValidator['schema']['props']
 
     try {
@@ -57,11 +57,10 @@ export default class RoomsMessagesController {
     }
 
     try {
-      const message = await RoomMessageService.create(payload)
+      const message: RoomMessage = await RoomMessageService.create(payload)
 
       cb(new ResponseService(ResponseMessages.SUCCESS, message))
-      return message
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       return cb(err)
     }
   }

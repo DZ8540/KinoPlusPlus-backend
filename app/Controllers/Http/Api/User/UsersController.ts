@@ -3,7 +3,7 @@ import UserService from 'App/Services/User/UserService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import UpdateUserValidator from 'App/Validators/User/UpdateUserValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -15,7 +15,7 @@ export default class UsersController {
       const user: User = await UserService.get(id)
 
       return response.status(200).send(new ResponseService(ResponseMessages.USER_UPDATED, user))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -38,7 +38,7 @@ export default class UsersController {
       const user: User = await UserService.update(id, payload)
 
       return response.status(200).send(new ResponseService(ResponseMessages.USER_UPDATED, user))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

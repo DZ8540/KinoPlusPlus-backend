@@ -4,11 +4,11 @@ import MailerException from 'App/Exceptions/MailerException'
 import ServerException from 'App/Exceptions/ServerException'
 import DatabaseException from 'App/Exceptions/DatabaseException'
 import ValidationException from 'App/Exceptions/ValidationException'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ResponseCodes } from 'Config/response'
 
 export default class ExceptionService {
-  constructor(err: Error) {
+  constructor(err: Err) {
     switch (err.code) {
       case ResponseCodes.CLIENT_ERROR:
         return new ClientException(err.msg, err.errors, err.body)

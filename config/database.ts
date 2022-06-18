@@ -8,11 +8,6 @@
 import Env from '@ioc:Adonis/Core/Env'
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
 
-export const VIDEOS_DESCRIPTION_LENGTH: number = 8192
-export const VIDEO_COMMENTS_DESCRIPTION_LENGTH: number = 4096
-
-export const GENRES_DESCRIPTION_LENGTH: number = 4096
-
 const databaseConfig: DatabaseConfig = {
   /*
   |--------------------------------------------------------------------------
@@ -59,5 +54,45 @@ const databaseConfig: DatabaseConfig = {
 
   }
 }
+
+export enum TablesNames {
+  /**
+   * * Genre
+   */
+
+  GENRES = 'genres',
+  GENRES_VIDEOS = 'genres_videos',
+
+  /**
+   * * User
+   */
+
+  ROLES = 'roles',
+  USERS = 'users',
+  SESSIONS = 'sessions',
+  WISHLISTS = 'wishlists',
+  LATER_LISTS = 'laterLists',
+  HISTORY_LISTS = 'historyLists',
+
+  /**
+   * * Video
+   */
+
+  VIDEOS = 'videos',
+  VIDEOS_COMMENTS = 'videosComments',
+
+  /**
+   * * Room
+   */
+
+  ROOMS = 'rooms',
+  ROOMS_MESSAGES = 'roomsMessages',
+  ROOMS_USERS = 'rooms_users',
+}
+
+export const VIDEOS_DESCRIPTION_LENGTH: number = 8192
+export const VIDEO_COMMENTS_DESCRIPTION_LENGTH: number = 4096
+
+export const GENRES_DESCRIPTION_LENGTH: number = 4096
 
 export default databaseConfig

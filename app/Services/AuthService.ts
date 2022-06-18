@@ -9,13 +9,13 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import Database from '@ioc:Adonis/Lucid/Database'
 import LoginValidator from 'App/Validators/LoginValidator'
 import RegisterValidator from 'App/Validators/RegisterValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { AuthHeaders } from 'Contracts/auth'
 import { RoleTypes, ROLE_TYPES } from 'Config/role'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { SignTokenConfig, Tokens, TokenUserPayload } from 'Contracts/token'
 
-const ERROR: Error = { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND }
+const ERROR: Err = { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND }
 
 export default class AuthService {
   public static async loginViaAdminPanel(payload: LoginValidator['schema']['props']): Promise<User> {
@@ -23,7 +23,7 @@ export default class AuthService {
 
     try {
       user = await UserService.getByEmail(payload.email)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw ERROR
     }
 
@@ -43,7 +43,7 @@ export default class AuthService {
 
     try {
       user = await UserService.get(id, { relations: ['role'] })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw ERROR
     }
 
@@ -63,7 +63,7 @@ export default class AuthService {
 
       await MailerService.sendMailVerificationToken(user)
       await trx.commit()
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       await trx.rollback()
 
       throw err
@@ -79,8 +79,8 @@ export default class AuthService {
       if (
         !user.isEmailVerified ||
         !(await Hash.verify(user.password, payload.password))
-      ) throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Error
-    } catch (err: Error | any) {
+      ) throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Err
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -108,7 +108,7 @@ export default class AuthService {
 
       user = await UserService.get(id)
       tokenSession = await TokenService.getTokenSession(token, user, headers)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -120,7 +120,7 @@ export default class AuthService {
       return { user, tokens }
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -133,7 +133,7 @@ export default class AuthService {
 
       user = await UserService.get(tokenData.id)
       tokenSession = await TokenService.getTokenSession(token, user, headers)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -141,7 +141,7 @@ export default class AuthService {
       await tokenSession.delete()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 

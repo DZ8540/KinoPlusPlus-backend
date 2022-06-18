@@ -1,7 +1,7 @@
 import User from 'App/Models/User/User'
 import Token from 'App/Models/User/Token'
 import Logger from '@ioc:Adonis/Core/Logger'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { sign, verify } from 'jsonwebtoken'
 import { AuthHeaders } from 'Contracts/auth'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
@@ -19,18 +19,18 @@ export default class TokenService {
         .first()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (!tokenSession)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Err
 
     if (headers) {
       if (
         tokenSession.ip != headers.ip ||
         tokenSession.userAgent != headers.userAgent ||
         tokenSession.fingerprint != headers.fingerprint
-      ) throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Error
+      ) throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Err
     }
 
     return tokenSession
@@ -53,7 +53,7 @@ export default class TokenService {
       return verify(token, key) as D
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.TOKEN_ERROR } as Err
     }
   }
 }

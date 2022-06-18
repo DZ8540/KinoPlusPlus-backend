@@ -12,7 +12,7 @@ import UpdateUserValidator from 'App/Validators/User/UpdateUserValidator'
 import { JSONPaginate } from 'Contracts/database'
 import { TokenUserPayload } from 'Contracts/token'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import { Err, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
 type Columns = typeof User['columns'][number]
@@ -23,7 +23,7 @@ export default class UserService {
       return await User.query().select(columns).getViaPaginate(config)
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -34,11 +34,11 @@ export default class UserService {
       item = await User.find(id, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Err
 
     try {
       if (config.relations) {
@@ -50,7 +50,7 @@ export default class UserService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -61,11 +61,11 @@ export default class UserService {
       item = await User.findBy('email', email, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.USER_NOT_FOUND } as Err
 
     try {
       if (config.relations) {
@@ -77,7 +77,7 @@ export default class UserService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -86,7 +86,7 @@ export default class UserService {
       return await User.create(payload, { client: trx })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -108,13 +108,13 @@ export default class UserService {
 
     try {
       user = await this.get(id, { trx })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
     if (payload.oldPassword) {
       if (!(await Hash.verify(user.password, payload.oldPassword)))
-        throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.OLD_PASSWORD_INCORRECT } as Error
+        throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.OLD_PASSWORD_INCORRECT } as Err
     }
 
     if (payload.avatar) {
@@ -130,12 +130,12 @@ export default class UserService {
       await user.merge(userPayload).save()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     try {
       return await this.get(id)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
   }
@@ -147,18 +147,18 @@ export default class UserService {
     try {
       payload = TokenService.verifyToken<TokenUserPayload>(token, authConfig.emailVerify.key)
       user = await this.getByEmail(payload.email)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
     if (user.isEmailVerified)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ACCOUNT_ALREADY_ACTIVATED } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ACCOUNT_ALREADY_ACTIVATED } as Err
 
     try {
       await user.merge({ isEmailVerified: true }).save()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -171,7 +171,7 @@ export default class UserService {
 
     try {
       user = await this.get(userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -183,7 +183,7 @@ export default class UserService {
       return wishlist
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -192,7 +192,7 @@ export default class UserService {
 
     try {
       user = await this.get(payload.userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -201,7 +201,7 @@ export default class UserService {
       await this.addToHistoryList(payload)
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -210,7 +210,7 @@ export default class UserService {
 
     try {
       user = await this.get(payload.userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -218,7 +218,7 @@ export default class UserService {
       await user.related('wishlist').detach([payload.videoId])
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -231,7 +231,7 @@ export default class UserService {
 
     try {
       user = await this.get(userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -243,7 +243,7 @@ export default class UserService {
       return laterList
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -252,7 +252,7 @@ export default class UserService {
 
     try {
       user = await this.get(payload.userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -261,7 +261,7 @@ export default class UserService {
       await this.addToHistoryList(payload)
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -270,7 +270,7 @@ export default class UserService {
 
     try {
       user = await this.get(payload.userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -278,7 +278,7 @@ export default class UserService {
       await user.related('laterList').detach([payload.videoId])
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -291,7 +291,7 @@ export default class UserService {
 
     try {
       user = await this.get(userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -307,7 +307,7 @@ export default class UserService {
       return historyList
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -316,7 +316,7 @@ export default class UserService {
 
     try {
       user = await this.get(payload.userId)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -330,7 +330,7 @@ export default class UserService {
       await user.related('historyList').attach([payload.videoId])
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 }

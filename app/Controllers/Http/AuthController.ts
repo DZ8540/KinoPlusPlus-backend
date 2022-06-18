@@ -1,6 +1,6 @@
 import AuthService from 'App/Services/AuthService'
 import LoginValidator from 'App/Validators/LoginValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { SESSION_USER_KEY } from 'Config/session'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -20,7 +20,7 @@ export default class AuthController {
 
       session.put(SESSION_USER_KEY, id)
       return response.redirect().toRoute('index')
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
 
       session.forget(SESSION_USER_KEY)

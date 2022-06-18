@@ -1,8 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { GENRES_DESCRIPTION_LENGTH } from 'Config/database'
+import { GENRES_DESCRIPTION_LENGTH, TablesNames } from 'Config/database'
 
 export default class Genres extends BaseSchema {
-  protected tableName = 'genres'
+  protected tableName = TablesNames.GENRES
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {

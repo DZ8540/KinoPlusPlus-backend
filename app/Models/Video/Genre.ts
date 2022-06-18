@@ -2,6 +2,7 @@ import Video from './Video'
 import Drive from '@ioc:Adonis/Core/Drive'
 import { DateTime } from 'luxon'
 import { camelCase } from 'Helpers/index'
+import { TablesNames } from 'Config/database'
 import {
   afterFetch, afterFind, BaseModel,
   beforeSave, column, ManyToMany,
@@ -59,7 +60,7 @@ export default class Genre extends BaseModel {
    * * Relations
    */
 
-  @manyToMany(() => Video, { pivotTable: 'genres_videos' })
+  @manyToMany(() => Video, { pivotTable: TablesNames.GENRES_VIDEOS })
   public videos: ManyToMany<typeof Video>
 
   /**

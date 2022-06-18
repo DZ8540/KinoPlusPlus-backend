@@ -5,6 +5,7 @@ import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import VideoCommentService from 'App/Services/Video/VideoCommentService'
 import VideoCommentValidator from 'App/Validators/Video/VideoCommentValidator'
+import { Err } from 'Contracts/services'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -28,7 +29,7 @@ export default class VideosCommentsController {
       const comments: ModelPaginatorContract<VideoComment> = await VideoCommentService.getVideoComments(videoId, config)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, comments))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -50,7 +51,7 @@ export default class VideosCommentsController {
       const item: VideoComment = await VideoCommentService.create(payload)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -73,7 +74,7 @@ export default class VideosCommentsController {
       const item: VideoComment = await VideoCommentService.update(id, payload)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, item))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -85,7 +86,7 @@ export default class VideosCommentsController {
       await VideoCommentService.delete(id)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

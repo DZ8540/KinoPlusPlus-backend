@@ -4,7 +4,7 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ApiValidator from 'App/Validators/ApiValidator'
 import RoomMessageValidator from 'App/Validators/Room/RoomMessageValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
@@ -16,7 +16,7 @@ export default class RoomMessageService {
 
     try {
       room = await RoomService.get(roomSlug)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -30,7 +30,7 @@ export default class RoomMessageService {
       return messages
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -43,12 +43,12 @@ export default class RoomMessageService {
       id = item.id
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     try {
       return await this.get(id)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
   }
@@ -64,11 +64,11 @@ export default class RoomMessageService {
       item = await RoomMessage.find(id)
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Err
 
     return item
   }

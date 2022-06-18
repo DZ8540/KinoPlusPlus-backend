@@ -4,7 +4,8 @@ import Video from '../Video/Video'
 import Hash from '@ioc:Adonis/Core/Hash'
 import RoleService from 'App/Services/User/RoleService'
 import { DateTime } from 'luxon'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
+import { TablesNames } from 'Config/database'
 import { RoleTypes, ROLE_TYPES } from 'Config/role'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
@@ -83,13 +84,13 @@ export default class User extends BaseModel {
   @hasMany(() => Token)
   public tokens: HasMany<typeof Token>
 
-  @manyToMany(() => Video, { pivotTable: 'wishlists' })
+  @manyToMany(() => Video, { pivotTable: TablesNames.WISHLISTS })
   public wishlist: ManyToMany<typeof Video>
 
-  @manyToMany(() => Video, { pivotTable: 'laterLists' })
+  @manyToMany(() => Video, { pivotTable: TablesNames.LATER_LISTS })
   public laterList: ManyToMany<typeof Video>
 
-  @manyToMany(() => Video, { pivotTable: 'historyLists' })
+  @manyToMany(() => Video, { pivotTable: TablesNames.HISTORY_LISTS })
   public historyList: ManyToMany<typeof Video>
 
   /**
@@ -144,7 +145,7 @@ export default class User extends BaseModel {
         const { id } = await RoleService.getByName(userRoleName)
 
         item.roleId = id
-      } catch (err: Error | any) {
+      } catch (err: Err | any) {
         throw err
       }
     }

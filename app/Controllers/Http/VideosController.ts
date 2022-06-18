@@ -1,7 +1,7 @@
 import Video from 'App/Models/Video/Video'
 import VideoService from 'App/Services/Video/VideoService'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -15,7 +15,7 @@ export default class VideosController {
       const videos: Video[] = await VideoService.paginate({ baseURL, page }, columns)
 
       return view.render('pages/videos/index', { videos })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -33,7 +33,7 @@ export default class VideosController {
 
       session.flash('success', ResponseMessages.VIDEO_CREATED)
       return response.redirect().toRoute('videos.index')
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -46,7 +46,7 @@ export default class VideosController {
       const item: Video = await VideoService.get(id)
 
       return view.render('pages/videos/show', { item })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -59,7 +59,7 @@ export default class VideosController {
       const item: Video = await VideoService.get(id)
 
       return view.render('pages/videos/edit', { item })
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -74,7 +74,7 @@ export default class VideosController {
 
       session.flash('success', ResponseMessages.VIDEO_UPDATED)
       return response.redirect().toRoute('videos.index')
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
       return response.redirect().back()
     }
@@ -87,7 +87,7 @@ export default class VideosController {
       await VideoService.delete(id)
 
       session.flash('success', ResponseMessages.VIDEO_DELETED)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       session.flash('error', err.msg)
     }
 

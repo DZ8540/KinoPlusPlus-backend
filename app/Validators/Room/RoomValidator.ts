@@ -1,6 +1,5 @@
 import BaseValidator from '../BaseValidator'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import { getUserIdRules } from '../Rules/userRules'
 import { getVideoIdRules } from '../Rules/Video/videoRules'
 
 export default class RoomValidator extends BaseValidator {
@@ -29,7 +28,6 @@ export default class RoomValidator extends BaseValidator {
    */
   public schema = schema.create({
     isOpen: schema.boolean(),
-    userId: schema.number(getUserIdRules()),
     videoId: schema.number(getVideoIdRules()),
   })
 

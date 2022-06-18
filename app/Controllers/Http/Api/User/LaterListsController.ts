@@ -4,6 +4,7 @@ import UserService from 'App/Services/User/UserService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import ListValidator from 'App/Validators/User/ListValidator'
+import { Err } from 'Contracts/services'
 import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -27,7 +28,7 @@ export default class LaterListsController {
       const laterList: JSONPaginate = await UserService.getUserLaterList(id, config)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS, laterList))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -49,7 +50,7 @@ export default class LaterListsController {
       await UserService.addToLaterList(payload)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -71,7 +72,7 @@ export default class LaterListsController {
       await UserService.removeFromLaterList(payload)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

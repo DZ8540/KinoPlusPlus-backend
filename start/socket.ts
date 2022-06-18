@@ -1,106 +1,136 @@
 import Room from 'App/Models/Room/Room'
+import Logger from '@ioc:Adonis/Core/Logger'
 import WebSocket from 'App/Services/WebSocket'
 import RoomMessage from 'App/Models/Room/RoomMessage'
 import ResponseService from 'App/Services/ResponseService'
 import RoomsController from 'App/Controllers/Http/Api/Room/RoomsController'
 import RoomsMessagesController from 'App/Controllers/Http/Api/Room/RoomsMessagesController'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
+import { JoinRoomData } from 'Contracts/room'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
-
-type ReturnJoinRoomEventPayload = {
-  usersCount: number,
-  room: Room,
-}
 
 WebSocket.boot()
 
 WebSocket.io.on('connection', (socket) => {
-  socket.data.rooms = []
+  connect()
 
-  async function getUsersCountInRoom(slug: Room['slug'], action: 'join' | 'unJoin'): Promise<number> {
-    if (action == 'join')
-      return (await socket.in(slug).fetchSockets()).length + 1
+  socket.on('room:create', async (request: any, cb: (result: Err | ResponseService) => void) => {
+    const slug: Room['slug'] | void = await RoomsController.create(socket.data.userId!, request, cb)
 
-    return (await socket.in(slug).fetchSockets()).length
-  }
-
-  socket.on('room:paginate', RoomsController.paginate)
-
-  socket.on('room:create', async (response: any, cb: (result: Error | ResponseService) => void) => {
-    const slug: Room['slug'] | void = await RoomsController.create(response, cb)
-
-    if (slug) {
-      socket.data.rooms!.push(slug)
-      await socket.join(slug)
-    }
+    if (slug)
+      socket.data.createdRoom = slug
   })
 
-  socket.on('room:update', async (slug: Room['slug'], payload: any, cb: (result: Error | ResponseService) => void) => {
-    if (!socket.data.rooms!.includes(slug)) {
+  socket.on('room:update', async (slug: Room['slug'], payload: any, cb: (result: Err | ResponseService) => void) => {
+    if (socket.data.createdRoom != slug) {
       return cb({
         code: ResponseCodes.CLIENT_ERROR,
         msg: ResponseMessages.ERROR,
       })
     }
 
-    const isOpen: void | Room['isOpen'] = await RoomsController.update(slug, payload, cb)
+    const isOpen: void | Room['isOpen'] = await RoomsController.update(socket.data.userId!, slug, payload, cb)
     if (
       isOpen != null ||
       isOpen != undefined
     ) socket.to(slug).emit('room:update', isOpen)
   })
 
-  socket.on('room:join', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
-    const room: void | Room = await RoomsController.join(slug, cb)
+  socket.on('room:join', async (roomSlug: Room['slug'], cb: (result: Err | ResponseService) => void) => {
+    const data: JoinRoomData = {
+      roomSlug,
+      userId: socket.data.userId!,
+      isCreator: socket.data.createdRoom == roomSlug
+    }
+    const room: void | Room = await RoomsController.join(data, cb)
 
     if (room) {
-      await socket.join(slug)
+      socket.data.room = roomSlug
+      await socket.join(roomSlug)
 
-      const usersCount: number = await getUsersCountInRoom(slug, 'join')
-
-      cb(new ResponseService(ResponseMessages.SUCCESS, { usersCount, room } as ReturnJoinRoomEventPayload))
-      socket.to(slug).emit('room:usersCountUpdate', usersCount)
+      cb(new ResponseService(ResponseMessages.SUCCESS, room))
+      socket.to(roomSlug).emit('room:usersCountUpdate', room.usersCount!)
     }
   })
 
-  socket.on('room:sendMessage', async (slug: Room['slug'], request: any, cb: (result: Error | ResponseService) => void) => {
-    if (socket.rooms.has(slug)) {
-      const msg: RoomMessage | void = await RoomsMessagesController.sendMessage(request, cb)
-
-      if (msg)
-        socket.to(slug).emit('room:newMessage', msg)
-    } else {
-      cb({
+  socket.on('room:sendMessage', async (slug: Room['slug'], request: any, cb: (result: Err | ResponseService) => void) => {
+    if (!socket.rooms.has(slug)) {
+      return cb({
         code: ResponseCodes.CLIENT_ERROR,
         msg: ResponseMessages.ERROR,
       })
     }
+
+    const msg: RoomMessage | void = await RoomsMessagesController.sendMessage(request, cb)
+
+    if (msg)
+      socket.to(slug).emit('room:newMessage', msg)
   })
 
   socket.on('room:getMessages', RoomsMessagesController.paginate)
 
-  socket.on('room:unJoin', async (slug: Room['slug'], cb: (result: Error | ResponseService) => void) => {
+  socket.on('room:unJoin', async (slug: Room['slug'], cb: (result: Err | ResponseService) => void) => {
     await socket.leave(slug)
 
-    if (socket.data.rooms!.includes(slug)) {
+    if (socket.data.createdRoom == slug) {
       await RoomsController.delete(slug)
-      socket.data.rooms = socket.data.rooms!.filter((item: Room['slug']) => item != slug)
+      resetRoom()
 
       socket.to(slug).emit('room:delete')
-    } else {
-      const usersCount: number = await getUsersCountInRoom(slug, 'unJoin')
-      socket.to(slug).emit('room:usersCountUpdate', usersCount)
+      return cb(new ResponseService(ResponseMessages.SUCCESS))
     }
 
-    cb(new ResponseService(ResponseMessages.SUCCESS))
+    if (socket.data.room) {
+      const data: JoinRoomData = {
+        userId: socket.data.userId!,
+        roomSlug: socket.data.room,
+        isCreator: false,
+      }
+      const room: Room | void = await RoomsController.unJoin(data, cb)
+
+      if (room) {
+        socket.to(slug).emit('room:usersCountUpdate', room.usersCount!)
+        cb(new ResponseService(ResponseMessages.SUCCESS))
+      }
+    }
   })
 
   socket.on('disconnect', async () => {
-    for (const item of socket.data.rooms!) {
-      await RoomsController.delete(item)
+    if (socket.data.createdRoom) {
+      await RoomsController.delete(socket.data.createdRoom)
 
-      socket.to(item).emit('room:delete')
+      socket.to(socket.data.createdRoom).emit('room:delete')
+      return
+    }
+
+    if (socket.data.room) {
+      const data: JoinRoomData = {
+        userId: socket.data.userId!,
+        roomSlug: socket.data.room,
+        isCreator: false,
+      }
+      const room: Room | void = await RoomsController.disconnectUnJoin(data)
+
+      if (room)
+        socket.to(socket.data.room).emit('room:usersCountUpdate', room.usersCount!)
     }
   })
+
+  function resetRoom(): void {
+    socket.data.createdRoom = null
+    socket.data.room = null
+  }
+
+  function connect(): void {
+    const userId: any = socket.handshake.query.userId
+
+    if (!userId) {
+      Logger.error(ResponseMessages.SOCKET_USER_ID_UNDEFINED)
+      socket.disconnect()
+      return
+    }
+
+    socket.data.userId = Number(userId)
+  }
 
 })

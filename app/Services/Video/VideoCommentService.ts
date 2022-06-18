@@ -4,7 +4,7 @@ import VideoComment from 'App/Models/Video/VideoComment'
 import VideoCommentValidator from 'App/Validators/Video/VideoCommentValidator'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import { Err, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof VideoComment['columns'][number]
 
@@ -17,7 +17,7 @@ export default class VideoCommentService {
         .getViaPaginate(config)
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -29,7 +29,7 @@ export default class VideoCommentService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -38,7 +38,7 @@ export default class VideoCommentService {
 
     try {
       item = await this.get(id, config)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -46,12 +46,12 @@ export default class VideoCommentService {
       item = await item.merge({ description }).save()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     try {
       return await this.get(item.id, config)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
   }
@@ -61,7 +61,7 @@ export default class VideoCommentService {
 
     try {
       item = await this.get(id, config)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 
@@ -69,7 +69,7 @@ export default class VideoCommentService {
       await item.delete()
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 
@@ -84,11 +84,11 @@ export default class VideoCommentService {
       item = await VideoComment.find(id, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
 
     if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.VIDEO_COMMENT_NOT_FOUND } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.VIDEO_COMMENT_NOT_FOUND } as Err
 
     try {
       if (config.relations) {
@@ -100,7 +100,7 @@ export default class VideoCommentService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 }

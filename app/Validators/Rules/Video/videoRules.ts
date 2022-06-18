@@ -1,8 +1,8 @@
 import Video from 'App/Models/Video/Video'
 import { Rule, rules } from '@ioc:Adonis/Core/Validator'
-import { VIDEOS_DESCRIPTION_LENGTH } from 'Config/database'
+import { TablesNames, VIDEOS_DESCRIPTION_LENGTH } from 'Config/database'
 
-const TABLE: string = 'videos'
+const TABLE: string = TablesNames.VIDEOS
 
 export function getVideoIdRules(uniqueOrExists: boolean | 'unique' | 'exists' = false, table: string = TABLE): Rule[] {
   const idRules: Rule[] = [ rules.unsigned() ]

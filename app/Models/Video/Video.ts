@@ -4,6 +4,7 @@ import Room from '../Room/Room'
 import Database from '@ioc:Adonis/Lucid/Database'
 import { DateTime } from 'luxon'
 import { camelCase } from 'Helpers/index'
+import { TablesNames } from 'Config/database'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
 import {
   BaseModel, beforeCreate, beforeSave,
@@ -97,7 +98,7 @@ export default class Video extends BaseModel {
   @hasMany(() => Room)
   public rooms: HasMany<typeof Room>
 
-  @manyToMany(() => Genre, { pivotTable: 'genres_videos' })
+  @manyToMany(() => Genre, { pivotTable: TablesNames.GENRES_VIDEOS })
   public genres: ManyToMany<typeof Genre>
 
   /**
@@ -146,12 +147,12 @@ export default class Video extends BaseModel {
     const video: ModelObject = { ...this.toJSON() }
 
     const isWishlist = await Database
-      .from('wishlists')
+      .from(TablesNames.WISHLISTS)
       .where('user_id', userId)
       .andWhere('video_id', video.id)
       .first()
     const isLaterList = await Database
-      .from('laterLists')
+      .from(TablesNames.LATER_LISTS)
       .where('user_id', userId)
       .andWhere('video_id', video.id)
       .first()

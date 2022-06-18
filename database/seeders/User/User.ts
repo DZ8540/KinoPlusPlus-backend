@@ -3,7 +3,7 @@ import Role from 'App/Models/User/Role'
 import Logger from '@ioc:Adonis/Core/Logger'
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import RoleService from 'App/Services/User/RoleService'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { UserFactory } from 'Database/factories'
 import { RoleTypes, ROLE_TYPES } from 'Config/role'
 
@@ -14,7 +14,7 @@ export default class UserSeeder extends BaseSeeder {
 
     try {
       adminRole = await RoleService.getByName(adminRoleName)
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw err
     }
 

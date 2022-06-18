@@ -6,7 +6,7 @@ import ExceptionService from 'App/Services/ExceptionService'
 import ApiLoginValidator from 'App/Validators/ApiLoginValidator'
 import RegisterValidator from 'App/Validators/RegisterValidator'
 import { Tokens } from 'Contracts/token'
-import { Error } from 'Contracts/services'
+import { Err } from 'Contracts/services'
 import { AuthHeaders } from 'Contracts/auth'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -30,7 +30,7 @@ export default class AuthController {
       await AuthService.registerViaApi(payload)
 
       return response.status(200).send(new ResponseService(ResponseMessages.ACTIVATE_ACCOUNT))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -42,7 +42,7 @@ export default class AuthController {
       await UserService.activate(token)
 
       return response.status(200).send(new ResponseService(ResponseMessages.SUCCESS))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -74,7 +74,7 @@ export default class AuthController {
         user: data.user,
         token: data.tokens.access,
       }))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
 
       throw new ExceptionService(err)
@@ -98,7 +98,7 @@ export default class AuthController {
         user: data.user,
         token: data.tokens.access,
       }))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }
@@ -117,7 +117,7 @@ export default class AuthController {
       response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
 
       return response.status(200).send(new ResponseService(ResponseMessages.LOGOUT))
-    } catch (err: Error | any) {
+    } catch (err: Err | any) {
       throw new ExceptionService(err)
     }
   }

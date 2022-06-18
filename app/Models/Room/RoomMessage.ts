@@ -1,6 +1,7 @@
 import Room from './Room'
 import User from '../User/User'
 import { DateTime } from 'luxon'
+import { TablesNames } from 'Config/database'
 import {
   afterCreate, BaseModel, beforeFetch,
   beforeFind, BelongsTo, belongsTo,
@@ -8,7 +9,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class RoomMessage extends BaseModel {
-  public static readonly table: string = 'roomsMessages'
+  public static readonly table: string = TablesNames.ROOMS_MESSAGES
   public static readonly columns = [
     'id', 'message', 'userId',
     'roomId', 'createdAt', 'updatedAt',

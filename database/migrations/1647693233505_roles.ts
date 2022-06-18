@@ -1,7 +1,8 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { TablesNames } from 'Config/database'
 
 export default class Roles extends BaseSchema {
-  protected tableName = 'roles'
+  protected tableName = TablesNames.ROLES
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {

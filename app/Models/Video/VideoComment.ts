@@ -1,6 +1,7 @@
 import Video from './Video'
 import User from '../User/User'
 import { DateTime } from 'luxon'
+import { TablesNames } from 'Config/database'
 import {
   BaseModel, beforeFetch, beforeFind,
   BelongsTo, belongsTo, column,
@@ -8,7 +9,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class VideoComment extends BaseModel {
-  public static readonly table: string = 'videosComments'
+  public static readonly table: string = TablesNames.VIDEOS_COMMENTS
   public static readonly columns = [
     'id', 'description', 'videoId',
     'userId', 'createdAt', 'updatedAt',
