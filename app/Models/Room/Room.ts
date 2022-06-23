@@ -1,6 +1,7 @@
 import User from '../User/User'
 import Video from '../Video/Video'
 import RoomMessage from './RoomMessage'
+import Database from '@ioc:Adonis/Lucid/Database'
 import { DateTime } from 'luxon'
 import { TablesNames } from 'Config/database'
 import { DEFAULT_DATETIME_FORMAT } from 'Config/app'
@@ -99,7 +100,12 @@ export default class Room extends BaseModel {
 
   @beforeDelete()
   public static async deleteAllMessages(item: Room) {
+    const trx = await Database.transaction()
+
     await item.related('messages').query().delete()
+    await item.related('users').detach([], trx)
+
+    await trx.commit()
   }
 
   @beforeFind()

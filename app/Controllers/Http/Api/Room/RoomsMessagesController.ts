@@ -60,6 +60,7 @@ export default class RoomsMessagesController {
       const message: RoomMessage = await RoomMessageService.create(payload)
 
       cb(new ResponseService(ResponseMessages.SUCCESS, message))
+      return message
     } catch (err: Err | any) {
       return cb(err)
     }
