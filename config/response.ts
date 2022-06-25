@@ -74,5 +74,11 @@ export enum ResponseMessages {
    * * Socket
    */
 
-  SOCKET_USER_ID_UNDEFINED = 'User id is undefined!'
+  SOCKET_USER_ID_UNDEFINED = 'User id is undefined!',
+
+  /**
+   * * Room
+   */
+
+  ROOM_USERS_COUNT = 'This room has enough users!',
 }

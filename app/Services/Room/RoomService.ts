@@ -1,3 +1,4 @@
+import roomConfig from 'Config/room'
 import User from 'App/Models/User/User'
 import Room from 'App/Models/Room/Room'
 import Video from 'App/Models/Video/Video'
@@ -6,18 +7,18 @@ import UserService from '../User/UserService'
 import VideoService from '../Video/VideoService'
 import RoomValidator from 'App/Validators/Room/RoomValidator'
 import VideoSearchValidator from 'App/Validators/Video/VideoSearchValidator'
-import { Err } from 'Contracts/services'
-import { JoinRoomData } from 'Contracts/room'
+import { RoomJoinPayload } from 'Contracts/room'
+import { Err, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { JSONPaginate, PaginationConfig } from 'Contracts/database'
 import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class RoomService {
-  public static async getBySlug(slug: Room['slug']): Promise<Room> {
+  public static async getBySlug(slug: Room['slug'], config: ServiceConfig<Room> = {}): Promise<Room> {
     let item: Room | null
 
     try {
-      item = await Room.findBy('slug', slug)
+      item = await Room.findBy('slug', slug, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
@@ -26,7 +27,18 @@ export default class RoomService {
     if (!item)
       throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Err
 
-    return item
+    try {
+      if (config.relations) {
+        for (const relation of config.relations) {
+          await item.load(relation)
+        }
+      }
+
+      return item
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
+    }
   }
 
   public static async create(userId: User['id'], payload: RoomValidator['schema']['props']): Promise<Room['slug']> {
@@ -93,7 +105,7 @@ export default class RoomService {
     }
   }
 
-  public static async joinAction(data: JoinRoomData, action: 'join' | 'unJoin'): Promise<Room> {
+  public static async joinAction(data: RoomJoinPayload, action: 'join' | 'unJoin'): Promise<Room> {
     let room: Room
 
     try {
@@ -101,6 +113,11 @@ export default class RoomService {
     } catch (err: Err | any) {
       throw err
     }
+
+    if (
+      action == 'join' &&
+      room.usersCount! >= roomConfig.usersCount
+    ) throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ROOM_USERS_COUNT } as Err
 
     try {
       if (action == 'join')
@@ -113,7 +130,7 @@ export default class RoomService {
     }
 
     try {
-      return await this.getBySlug(data.roomSlug)
+      return await this.getBySlug(data.roomSlug, { relations: ['users'] })
     } catch (err: Err | any) {
       throw err
     }
@@ -140,6 +157,23 @@ export default class RoomService {
         .withScopes((scopes) => scopes.opened())
         .whereIn('video_id', videosIds)
         .getViaPaginate(paginateConfig)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
+    }
+  }
+
+  public static async kickUser(roomSlug: Room['slug'], userId: User['id']): Promise<void> {
+    let room: Room
+
+    try {
+      room = await this.getBySlug(roomSlug)
+    } catch (err: Err | any) {
+      throw err
+    }
+
+    try {
+      await room.related('users').detach([userId])
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err

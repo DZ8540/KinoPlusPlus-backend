@@ -4,7 +4,7 @@ import RoomService from 'App/Services/Room/RoomService'
 import ResponseService from 'App/Services/ResponseService'
 import RoomValidator from 'App/Validators/Room/RoomValidator'
 import { Err } from 'Contracts/services'
-import { JoinRoomData } from 'Contracts/room'
+import { RoomJoinPayload } from 'Contracts/room'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
@@ -71,7 +71,7 @@ export default class RoomsController {
     } catch (err: Err | any) {}
   }
 
-  public static async join(data: JoinRoomData, cb: (result: Err | ResponseService) => void): Promise<Room | void> {
+  public static async join(data: RoomJoinPayload, cb: (result: Err | ResponseService) => void): Promise<Room | void> {
     try {
       return await RoomService.joinAction(data, 'join')
     } catch (err: Err | any) {
@@ -79,7 +79,7 @@ export default class RoomsController {
     }
   }
 
-  public static async unJoin(data: JoinRoomData, cb: (result: Err | ResponseService) => void): Promise<Room | void> {
+  public static async unJoin(data: RoomJoinPayload, cb: (result: Err | ResponseService) => void): Promise<Room | void> {
     try {
       return await RoomService.joinAction(data, 'unJoin')
     } catch (err: Err | any) {
@@ -87,7 +87,19 @@ export default class RoomsController {
     }
   }
 
-  public static async disconnectUnJoin(data: JoinRoomData): Promise<Room | void> {
+  public static async kickUser(roomSlug: Room['slug'], userId: User['id'], cb: (result: Err | ResponseService) => void): Promise<boolean> {
+    try {
+      await RoomService.kickUser(roomSlug, userId)
+
+      cb(new ResponseService(ResponseMessages.SUCCESS))
+      return true
+    } catch (err: Err | any) {
+      cb(err)
+      return false
+    }
+  }
+
+  public static async disconnectUnJoin(data: RoomJoinPayload): Promise<Room | void> {
     try {
       return await RoomService.joinAction(data, 'unJoin')
     } catch (err: Err | any) {}

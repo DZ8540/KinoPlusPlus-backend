@@ -1,4 +1,5 @@
 import Room from 'App/Models/Room/Room'
+import User from 'App/Models/User/User'
 import Logger from '@ioc:Adonis/Core/Logger'
 import WebSocket from 'App/Services/WebSocket'
 import RoomMessage from 'App/Models/Room/RoomMessage'
@@ -6,7 +7,7 @@ import ResponseService from 'App/Services/ResponseService'
 import RoomsController from 'App/Controllers/WebSocket/Api/Room/RoomsController'
 import RoomsMessagesController from 'App/Controllers/WebSocket/Api/Room/RoomsMessagesController'
 import { Err } from 'Contracts/services'
-import { JoinRoomData } from 'Contracts/room'
+import { RoomJoinPayload } from 'Contracts/room'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 
 WebSocket.boot()
@@ -22,12 +23,7 @@ WebSocket.io.on('connection', (socket) => {
   })
 
   socket.on('room:update', async (slug: Room['slug'], payload: any, cb: (result: Err | ResponseService) => void) => {
-    if (socket.data.createdRoom != slug) {
-      return cb({
-        code: ResponseCodes.CLIENT_ERROR,
-        msg: ResponseMessages.ERROR,
-      })
-    }
+    if (!checkCreator(slug, cb)) return
 
     const isOpen: void | Room['isOpen'] = await RoomsController.update(socket.data.userId!, slug, payload, cb)
     if (
@@ -37,7 +33,7 @@ WebSocket.io.on('connection', (socket) => {
   })
 
   socket.on('room:join', async (roomSlug: Room['slug'], cb: (result: Err | ResponseService) => void) => {
-    const data: JoinRoomData = {
+    const data: RoomJoinPayload = {
       roomSlug,
       userId: socket.data.userId!,
       isCreator: socket.data.createdRoom == roomSlug
@@ -81,7 +77,7 @@ WebSocket.io.on('connection', (socket) => {
     }
 
     if (socket.data.room) {
-      const data: JoinRoomData = {
+      const data: RoomJoinPayload = {
         userId: socket.data.userId!,
         roomSlug: socket.data.room,
         isCreator: false,
@@ -95,6 +91,15 @@ WebSocket.io.on('connection', (socket) => {
     }
   })
 
+  socket.on('room:kickUser', async (roomSlug: Room['slug'], userId: User['id'], cb: (result: Err | ResponseService) => void) => {
+    if (!checkCreator(roomSlug, cb)) return
+
+    const result: boolean = await RoomsController.kickUser(roomSlug, userId, cb)
+
+    if (result)
+      socket.to(roomSlug).emit('room:kickUser', userId)
+  })
+
   socket.on('disconnect', async () => {
     if (socket.data.createdRoom) {
       await RoomsController.delete(socket.data.createdRoom)
@@ -104,7 +109,7 @@ WebSocket.io.on('connection', (socket) => {
     }
 
     if (socket.data.room) {
-      const data: JoinRoomData = {
+      const data: RoomJoinPayload = {
         userId: socket.data.userId!,
         roomSlug: socket.data.room,
         isCreator: false,
@@ -131,6 +136,19 @@ WebSocket.io.on('connection', (socket) => {
     }
 
     socket.data.userId = Number(userId)
+  }
+
+  function checkCreator(slug: Room['slug'], cb: (result: Err | ResponseService) => void): boolean {
+    if (socket.data.createdRoom != slug) {
+      cb({
+        code: ResponseCodes.CLIENT_ERROR,
+        msg: ResponseMessages.ERROR,
+      })
+
+      return false
+    }
+
+    return true
   }
 
 })

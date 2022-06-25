@@ -12,11 +12,13 @@ export interface ServerToClientEvents {
   'room:newMessage': (msg: RoomMessage) => void,
   'room:update': (isOpen: Room['isOpen']) => void,
   'room:usersCountUpdate': (users: number) => void,
+  'room:kickUser': (userId: User['id']) => void,
 }
 
 export interface ClientToServerEvents {
   'room:unJoin': (slug: Room['slug'], cb: (result: Err | ResponseService) => void) => void,
   'room:join': (roomSlug: Room['slug'], cb: (result: Err | ResponseService) => void) => void,
+  'room:kickUser': (roomSlug: Room['slug'], userId: User['id'], cb: (result: Err | ResponseService) => void) => void,
   'room:create': (request: RoomValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
   'room:update': (slug: Room['slug'], request: RoomValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
   'room:getMessages': (slug: Room['slug'], request: ApiValidator['schema']['props'], cb: (result: Err | ResponseService) => void) => void,
@@ -26,7 +28,7 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {
-  createdRoom: Room['slug'] | null,
-  room: Room['slug'] | null,
   userId: User['id'],
+  room: Room['slug'] | null,
+  createdRoom: Room['slug'] | null,
 }
