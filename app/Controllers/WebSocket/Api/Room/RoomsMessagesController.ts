@@ -13,7 +13,7 @@ const apiValidator: ApiValidator = new ApiValidator()
 const roomMessageValidator: RoomMessageValidator = new RoomMessageValidator()
 
 export default class RoomsMessagesController {
-  public static async paginate(slug: Room['slug'], request: any, cb: (result: Err | ResponseService) => void) {
+  public static async paginate(slug: Room['slug'], request: any, cb: (result: Err | ResponseService) => void): Promise<void> {
     let config: ApiValidator['schema']['props']
 
     try {

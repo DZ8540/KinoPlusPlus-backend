@@ -89,10 +89,6 @@ Route.group(() => {
    * * Room
    */
 
-  // Route.group(() => {
-
-  //   Route.post('/:videoName', 'Api/Room/RoomsController.search')
-
-  // }).prefix('/rooms').middleware('CheckAccessToken')
+  Route.post('/rooms/search', 'Api/RoomsController.search')
 
 }).prefix('/api')

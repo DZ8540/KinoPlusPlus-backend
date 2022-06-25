@@ -3,7 +3,7 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import { getGenreIdRules } from '../Rules/genreRules'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class SearchValidator extends ApiValidator {
+export default class VideoSearchValidator extends ApiValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -29,6 +29,7 @@ export default class SearchValidator extends ApiValidator {
    */
   public schema = schema.create({
     ...this.preParsedSchema,
+    videoName: schema.string.optional({ trim: true }),
     genres: schema.array.optional().members(schema.number(getGenreIdRules())),
   })
 

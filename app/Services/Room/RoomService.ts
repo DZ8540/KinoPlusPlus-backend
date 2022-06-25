@@ -4,30 +4,16 @@ import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
 import UserService from '../User/UserService'
 import VideoService from '../Video/VideoService'
-import ApiValidator from 'App/Validators/ApiValidator'
 import RoomValidator from 'App/Validators/Room/RoomValidator'
+import VideoSearchValidator from 'App/Validators/Video/VideoSearchValidator'
 import { Err } from 'Contracts/services'
 import { JoinRoomData } from 'Contracts/room'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
+import { JSONPaginate, PaginationConfig } from 'Contracts/database'
 import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
-type Columns = typeof Room['columns'][number]
-
 export default class RoomService {
-  public static async paginate(config: ApiValidator['schema']['props'], columns: Columns[] = []): Promise<ModelPaginatorContract<Room>> {
-    try {
-      return await Room
-        .query()
-        .select(columns)
-        .withScopes((scopes) => scopes.opened())
-        .getViaPaginate(config)
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
-    }
-  }
-
-  public static async get(slug: Room['slug']): Promise<Room> {
+  public static async getBySlug(slug: Room['slug']): Promise<Room> {
     let item: Room | null
 
     try {
@@ -73,7 +59,7 @@ export default class RoomService {
     let item: Room
 
     try {
-      item = await this.get(slug)
+      item = await this.getBySlug(slug)
 
       if (item.creator[0].id != userId)
         throw { code: ResponseCodes.CLIENT_ERROR, msg: ResponseMessages.ERROR } as Err
@@ -94,7 +80,7 @@ export default class RoomService {
     let item: Room
 
     try {
-      item = await this.get(slug)
+      item = await this.getBySlug(slug)
     } catch (err: Err | any) {
       throw err
     }
@@ -111,7 +97,7 @@ export default class RoomService {
     let room: Room
 
     try {
-      room = await this.get(data.roomSlug)
+      room = await this.getBySlug(data.roomSlug)
     } catch (err: Err | any) {
       throw err
     }
@@ -127,9 +113,36 @@ export default class RoomService {
     }
 
     try {
-      return await this.get(data.roomSlug)
+      return await this.getBySlug(data.roomSlug)
     } catch (err: Err | any) {
       throw err
+    }
+  }
+
+  public static async search(config: VideoSearchValidator['schema']['props']): Promise<ModelPaginatorContract<Room>> {
+    let videosIds: Video['id'][]
+    const paginateConfig: PaginationConfig = {
+      page: config.page,
+      limit: config.limit,
+      orderBy: config.orderBy,
+    }
+
+    try {
+      const videos: JSONPaginate = await VideoService.search(config)
+      videosIds = videos.data.map(({ id }: Video) => id)
+    } catch (err: Err | any) {
+      throw err
+    }
+
+    try {
+      return await Room
+        .query()
+        .withScopes((scopes) => scopes.opened())
+        .whereIn('video_id', videosIds)
+        .getViaPaginate(paginateConfig)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
     }
   }
 }

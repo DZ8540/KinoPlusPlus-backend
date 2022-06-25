@@ -33,13 +33,6 @@ export default class Room extends BaseModel {
   public slug: string
 
   /**
-   * * Aggregate columns
-   */
-
-  @column({ columnName: 'users_count' })
-  public usersCount?: number
-
-  /**
    * * Foreign keys
    */
 
@@ -55,6 +48,13 @@ export default class Room extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  /**
+   * * Aggregate columns
+   */
+
+   @column({ columnName: 'users_count' })
+   public usersCount?: number
 
   /**
    * * Relations
@@ -98,6 +98,15 @@ export default class Room extends BaseModel {
    * * Hooks
    */
 
+  @beforeFind()
+  @beforeFetch()
+  public static async preloadRelations(query: ModelQueryBuilderContract<typeof Room>) {
+    query
+      .withCount('users')
+      .preload('creator')
+      .preload('video')
+  }
+
   @beforeDelete()
   public static async deleteAllMessages(item: Room) {
     const trx = await Database.transaction()
@@ -106,14 +115,5 @@ export default class Room extends BaseModel {
     await item.related('users').detach([], trx)
 
     await trx.commit()
-  }
-
-  @beforeFind()
-  @beforeFetch()
-  public static async preloadRelations(query: ModelQueryBuilderContract<typeof Room>) {
-    query
-      .withCount('users')
-      .preload('creator')
-      .preload('video')
   }
 }

@@ -15,7 +15,7 @@ export default class RoomMessageService {
     let room: Room
 
     try {
-      room = await RoomService.get(roomSlug)
+      room = await RoomService.getBySlug(roomSlug)
     } catch (err: Err | any) {
       throw err
     }

@@ -7,8 +7,8 @@ import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import ListValidator from 'App/Validators/User/ListValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
-import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
+import VideoSearchValidator from 'App/Validators/Video/VideoSearchValidator'
 import { Err } from 'Contracts/services'
 import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
@@ -17,11 +17,11 @@ import { ModelObject, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class VideosController {
   public async search({ request, params, response }: HttpContextContract) {
-    let payload: SearchValidator['schema']['props']
+    let payload: VideoSearchValidator['schema']['props']
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
-      payload = await request.validate(SearchValidator)
+      payload = await request.validate(VideoSearchValidator)
     } catch (err: any) {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,

@@ -3,8 +3,8 @@ import Video from 'App/Models/Video/Video'
 import Logger from '@ioc:Adonis/Core/Logger'
 import VideoValidator from 'App/Validators/Video/VideoValidator'
 import NewestValidator from 'App/Validators/Video/NewestValidator'
-import SearchValidator from 'App/Validators/Video/SearchValidator'
 import PopularValidator from 'App/Validators/Video/PopularValidator'
+import VideoSearchValidator from 'App/Validators/Video/VideoSearchValidator'
 import { JSONPaginate } from 'Contracts/database'
 import { ResponseCodes, ResponseMessages } from 'Config/response'
 import { Err, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -176,7 +176,7 @@ export default class VideoService {
     }
   }
 
-  public static async search(payload: SearchValidator['schema']['props'], currentUserId?: User['id']): Promise<JSONPaginate> {
+  public static async search(payload: VideoSearchValidator['schema']['props'], currentUserId?: User['id']): Promise<JSONPaginate> {
     let query = Video.query()
 
     if (!payload.limit)
@@ -187,6 +187,12 @@ export default class VideoService {
 
       for (const key in payload) {
         switch (key) {
+          case 'videoName':
+            console.log(payload[key])
+            query = query.where('name', 'ilike', `%${payload[key]}%`)
+
+            break
+
           case 'genres':
 
             if (payload[key]) {

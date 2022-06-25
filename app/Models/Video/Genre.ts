@@ -89,15 +89,4 @@ export default class Genre extends BaseModel {
         item.image = await Drive.getUrl(item.image)
     }))
   }
-
-  // public async serialize(): Promise<ModelObject> {
-  //   const serializedItem: ModelObject = super.serialize()
-  //   let showOnMainPage: boolean
-
-  //   const itemFromMongo = await GenresOnMainPage.findOne({ genreId: serializedItem.id })
-  //   showOnMainPage = !!itemFromMongo // * Cast to boolean
-
-  //   serializedItem.showOnMainPage = showOnMainPage
-  //   return serializedItem
-  // }
 }
