@@ -188,7 +188,6 @@ export default class VideoService {
       for (const key in payload) {
         switch (key) {
           case 'videoName':
-            console.log(payload[key])
             query = query.where('name', 'ilike', `%${payload[key]}%`)
 
             break

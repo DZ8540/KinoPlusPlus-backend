@@ -91,7 +91,7 @@ export default class RoomsController {
     try {
       const room: Room = await RoomService.kickUser(roomSlug, userId)
 
-      cb(new ResponseService(ResponseMessages.SUCCESS))
+      cb(new ResponseService(ResponseMessages.SUCCESS, userId))
       return room
     } catch (err: Err | any) {
       return cb(err)
