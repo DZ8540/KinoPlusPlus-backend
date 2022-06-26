@@ -105,6 +105,7 @@ export default class Room extends BaseModel {
       .withCount('users')
       .preload('creator')
       .preload('video')
+      .preload('users')
   }
 
   @beforeDelete()

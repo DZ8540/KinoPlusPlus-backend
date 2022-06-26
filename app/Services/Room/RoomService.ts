@@ -130,7 +130,7 @@ export default class RoomService {
     }
 
     try {
-      return await this.getBySlug(data.roomSlug, { relations: ['users'] })
+      return await this.getBySlug(data.roomSlug)
     } catch (err: Err | any) {
       throw err
     }
@@ -163,7 +163,7 @@ export default class RoomService {
     }
   }
 
-  public static async kickUser(roomSlug: Room['slug'], userId: User['id']): Promise<void> {
+  public static async kickUser(roomSlug: Room['slug'], userId: User['id']): Promise<Room> {
     let room: Room
 
     try {
@@ -177,6 +177,12 @@ export default class RoomService {
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, msg: ResponseMessages.ERROR } as Err
+    }
+
+    try {
+      return await this.getBySlug(roomSlug)
+    } catch (err: Err | any) {
+      throw err
     }
   }
 }

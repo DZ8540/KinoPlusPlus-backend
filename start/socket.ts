@@ -45,7 +45,7 @@ WebSocket.io.on('connection', (socket) => {
       await socket.join(roomSlug)
 
       cb(new ResponseService(ResponseMessages.SUCCESS, room))
-      socket.to(roomSlug).emit('room:usersCountUpdate', room.usersCount!)
+      socket.to(roomSlug).emit('room:updateUsersCount', room.users)
     }
   })
 
@@ -85,7 +85,7 @@ WebSocket.io.on('connection', (socket) => {
       const room: Room | void = await RoomsController.unJoin(data, cb)
 
       if (room) {
-        socket.to(slug).emit('room:usersCountUpdate', room.usersCount!)
+        socket.to(slug).emit('room:updateUsersCount', room.users)
         cb(new ResponseService(ResponseMessages.SUCCESS))
       }
     }
@@ -94,10 +94,12 @@ WebSocket.io.on('connection', (socket) => {
   socket.on('room:kickUser', async (roomSlug: Room['slug'], userId: User['id'], cb: (result: Err | ResponseService) => void) => {
     if (!checkCreator(roomSlug, cb)) return
 
-    const result: boolean = await RoomsController.kickUser(roomSlug, userId, cb)
+    const room: Room | void = await RoomsController.kickUser(roomSlug, userId, cb)
 
-    if (result)
+    if (room) {
       socket.to(roomSlug).emit('room:kickUser', userId)
+      socket.to(roomSlug).emit('room:updateUsersCount', room.users)
+    }
   })
 
   socket.on('disconnect', async () => {
@@ -117,7 +119,7 @@ WebSocket.io.on('connection', (socket) => {
       const room: Room | void = await RoomsController.disconnectUnJoin(data)
 
       if (room)
-        socket.to(socket.data.room).emit('room:usersCountUpdate', room.usersCount!)
+        socket.to(socket.data.room).emit('room:updateUsersCount', room.users)
     }
   })
 

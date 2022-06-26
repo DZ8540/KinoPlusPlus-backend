@@ -10,9 +10,9 @@ import { Err } from './services'
 export interface ServerToClientEvents {
   'room:delete': () => void,
   'room:newMessage': (msg: RoomMessage) => void,
-  'room:update': (isOpen: Room['isOpen']) => void,
-  'room:usersCountUpdate': (users: number) => void,
   'room:kickUser': (userId: User['id']) => void,
+  'room:update': (isOpen: Room['isOpen']) => void,
+  'room:updateUsersCount': (users: Room['users']) => void,
 }
 
 export interface ClientToServerEvents {

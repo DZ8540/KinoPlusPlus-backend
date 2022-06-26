@@ -87,15 +87,14 @@ export default class RoomsController {
     }
   }
 
-  public static async kickUser(roomSlug: Room['slug'], userId: User['id'], cb: (result: Err | ResponseService) => void): Promise<boolean> {
+  public static async kickUser(roomSlug: Room['slug'], userId: User['id'], cb: (result: Err | ResponseService) => void): Promise<Room | void> {
     try {
-      await RoomService.kickUser(roomSlug, userId)
+      const room: Room = await RoomService.kickUser(roomSlug, userId)
 
       cb(new ResponseService(ResponseMessages.SUCCESS))
-      return true
+      return room
     } catch (err: Err | any) {
-      cb(err)
-      return false
+      return cb(err)
     }
   }
 
